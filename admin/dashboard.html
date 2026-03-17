@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin – Kesbangpol Kudus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../src/admin.png">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <img src="../src/LOGO.png" alt="Logo">
+    <div class="sidebar-brand-text">
+      Kesbangpol Kudus
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Menu</div>
+    <a class="nav-item active" onclick="showPage('dashboard')" href="#">
+      <i class="bi bi-grid-fill"></i>
+      <span>Dashboard</span>
+    </a>
+    <a class="nav-item" onclick="showPage('data')" href="#">
+      <i class="bi bi-table"></i>
+      <span>Data Pendaftar</span>
+    </a>
+    <a class="nav-item" onclick="showPage('rekap')" href="#">
+      <i class="bi bi-bar-chart-fill"></i>
+      <span>Rekap & Statistik</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-info">
+      <div class="admin-avatar" id="adminInitial">A</div>
+      <div>
+        <div class="admin-name" id="adminNameSidebar">Admin</div>
+        <div class="admin-role">Administrator</div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">
+      <i class="bi bi-box-arrow-left"></i>
+      <span>Keluar</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="pageTitle">Dashboard</div>
+    <div class="topbar-right">
+      <button class="btn-refresh" onclick="loadData()">
+        <i class="bi bi-arrow-clockwise"></i>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== PAGE: DASHBOARD ===== -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
+          <div>
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Total Pendaftar</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow"><i class="bi bi-hourglass-split"></i></div>
+          <div>
+            <div class="stat-value" id="statPending">—</div>
+            <div class="stat-label">Menunggu Proses</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="bi bi-arrow-repeat"></i></div>
+          <div>
+            <div class="stat-value" id="statProses">—</div>
+            <div class="stat-label">Sedang Diproses</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+          <div>
+            <div class="stat-value" id="statSelesai">—</div>
+            <div class="stat-label">Selesai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Pendaftar Terbaru</h3>
+        </div>
+        <div class="table-scroll">
+          <table id="tableDashboard">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nama</th>
+                <th>Judul Penelitian</th>
+                <th>Tanggal Daftar</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDashboard">
+              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div>Memuat data...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: DATA PENDAFTAR ===== -->
+    <div class="page" id="page-data">
+      <div class="filter-bar">
+        <label><i class="bi bi-funnel me-1"></i>Filter:</label>
+        <input type="date" id="filterDari" placeholder="Dari tanggal">
+        <label>s/d</label>
+        <input type="date" id="filterSampai" placeholder="Sampai tanggal">
+        <select id="filterStatus">
+          <option value="">Semua Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Diproses">Diproses</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditolak">Ditolak</option>
+        </select>
+        <button class="btn-filter" onclick="applyFilter()">
+          <i class="bi bi-search"></i> Tampilkan
+        </button>
+        <button class="btn-filter-reset" onclick="resetFilter()">
+          <i class="bi bi-x-circle"></i> Reset
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>Data Pendaftar</h3>
+          <div class="table-header-right">
+            <input type="text" class="search-input" id="searchInput" placeholder="Cari nama / judul..." oninput="searchData()">
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Waktu Daftar</th>
+                <th>Nama</th>
+                <th>Judul Penelitian</th>
+                <th>OPD</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyData">
+              <tr><td colspan="8"><div class="loading-state"><div class="spinner"></div>Memuat data...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: REKAP ===== -->
+    <div class="page" id="page-rekap">
+      <div class="filter-bar">
+        <label><i class="bi bi-calendar3 me-1"></i>Rekap Periode:</label>
+        <input type="date" id="rekapDari">
+        <label>s/d</label>
+        <input type="date" id="rekapSampai">
+        <button class="btn-filter" onclick="loadRekap()">
+          <i class="bi bi-bar-chart"></i> Tampilkan Rekap
+        </button>
+        <button class="btn-filter-reset" onclick="resetRekap()">
+          <i class="bi bi-x-circle"></i> Reset
+        </button>
+      </div>
+
+      <div class="rekap-grid" id="rekapGrid">
+        <div class="rekap-card">
+          <h4><i class="bi bi-pie-chart-fill"></i> Status Pendaftaran</h4>
+          <div id="rekapStatus"><div class="loading-state"><div class="spinner"></div></div></div>
+        </div>
+        <div class="rekap-card">
+          <h4><i class="bi bi-building"></i> OPD Terbanyak</h4>
+          <div id="rekapOPD"><div class="loading-state"><div class="spinner"></div></div></div>
+        </div>
+        <div class="rekap-card">
+          <h4><i class="bi bi-mortarboard-fill"></i> Asal Kampus</h4>
+          <div id="rekapKampus"><div class="loading-state"><div class="spinner"></div></div></div>
+        </div>
+        <div class="rekap-card">
+          <h4><i class="bi bi-calendar-month"></i> Pendaftar per Bulan</h4>
+          <div id="rekapBulan"><div class="loading-state"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL STATUS ===== -->
+<div class="modal-overlay" id="modalStatus">
+  <div class="modal-box">
+    <div class="modal-title"><i class="bi bi-arrow-repeat"></i> Ubah Status</div>
+    <div class="modal-form-group">
+      <label>Nama Pemohon</label>
+      <p id="modalNama">—</p>
+    </div>
+    <div class="modal-form-group">
+      <label>Status Baru</label>
+      <select id="modalStatusSelect">
+        <option value="Pending">⏳ Pending</option>
+        <option value="Diproses">🔄 Diproses</option>
+        <option value="Selesai">✅ Selesai</option>
+        <option value="Ditolak">❌ Ditolak</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('modalStatus')">Batal</button>
+      <button class="btn-modal-primary" onclick="saveStatus()">Simpan Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL EMAIL ===== -->
+<div class="modal-overlay" id="modalEmail">
+  <div class="modal-box">
+    <div class="modal-title"><i class="bi bi-envelope-fill"></i> Kirim Email ke Pemohon</div>
+    <div class="modal-form-group">
+      <label>Kepada</label>
+      <p id="modalEmailTo">—</p>
+    </div>
+    <div class="modal-form-group">
+      <label>Subjek</label>
+      <select id="modalEmailSubject" onchange="toggleFileUpload()">
+        <option value="selesai">✅ Surat Rekomendasi Siap</option>
+        <option value="info">Informasi Tambahan Diperlukan</option>
+        <option value="ditolak">Pendaftaran Tidak Dapat Diproses</option>
+        <option value="custom">Pesan Kustom</option>
+      </select>
+    </div>
+    <div class="modal-form-group" id="fileUploadGroup">
+      <label>Lampiran Surat <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label>
+      <div class="file-upload-wrap" id="fileUploadWrap">
+        <i class="bi bi-paperclip"></i>
+        <span id="fileUploadLabel">Klik untuk pilih file surat (PDF/DOC)</span>
+        <input type="file" id="modalEmailFile" accept=".pdf,.doc,.docx" onchange="onFileSelected()">
+      </div>
+      <p class="file-selected-name" id="fileSelectedName" style="display:none"></p>
+    </div>
+    <div class="modal-form-group">
+      <label>Pesan Tambahan (opsional)</label>
+      <textarea id="modalEmailBody" placeholder="Tambahkan pesan khusus di sini..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('modalEmail')">Batal</button>
+      <button class="btn-modal-primary" id="btnKirimEmail" onclick="sendEmail()"><i class="bi bi-send-fill"></i> Kirim Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <i class="bi bi-check-circle-fill" id="toastIcon"></i>
+  <span id="toastMsg">Berhasil!</span>
+</div>
+
+<!-- ===== MODAL KONFIRMASI SURAT ===== -->
+<div class="modal-overlay" id="modalKonfirmasiSurat">
+  <div class="modal-box" style="max-width:400px; text-align:center;">
+    <div style="width:56px;height:56px;background:#e8f8f0;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;">
+      <i class="bi bi-file-earmark-text" style="color:var(--success)"></i>
+    </div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:8px;">Generate Surat Rekomendasi</div>
+    <p style="font-size:13.5px;color:var(--muted);margin-bottom:6px;">Nama Pemohon</p>
+    <p id="konfirmasiNama" style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">—</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;">
+      Surat rekomendasi akan dibuat otomatis dari template dan disimpan di Google Drive. Pastikan data pemohon sudah lengkap sebelum melanjutkan.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('modalKonfirmasiSurat')">Batal</button>
+      <button class="btn-modal-primary" id="btnKonfirmasiSurat" onclick="doGenerateSurat()">
+        <i class="bi bi-file-earmark-plus"></i> Ya, Buat Surat
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL SURAT SIAP ===== -->
+<div class="modal-overlay" id="modalSuratSiap">
+  <div class="modal-box" style="max-width:420px; text-align:center;">
+    <div style="width:56px;height:56px;background:#e8f8f0;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;">
+      <i class="bi bi-check-circle-fill" style="color:var(--success)"></i>
+    </div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:8px;">Surat Berhasil Dibuat!</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;">
+      Surat rekomendasi untuk <strong id="suratSiapNama">—</strong> sudah tersimpan di Google Drive. Silakan periksa dan edit terlebih dahulu sebelum dikirim ke pemohon.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a id="btnLihatSurat" href="#" target="_blank" class="btn-modal-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
+        <i class="bi bi-pencil-square"></i> Lihat &amp; Edit Surat di Google Docs
+      </a>
+      <button class="btn-modal-primary" style="background:linear-gradient(135deg,#198754,#20a060);" onclick="closeModal('modalSuratSiap'); openModalEmailDariSurat()">
+        <i class="bi bi-send-fill"></i> Kirim ke Pendaftar
+      </button>
+      <button class="btn-modal-cancel" style="width:100%;" onclick="closeModal('modalSuratSiap')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyZ5WJGmg1qkPgjuiHGJrGzAIFNQWumpw92FBoun7S60oTYriJQ_6yxgcDFBBOqYdQ/exec";
+
+  let allData = [];
+  let filteredData = [];
+  let currentRow = null;
+  let currentRowIndex = null;
+
+  // ===== AUTH CHECK =====
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!sessionStorage.getItem("adminLoggedIn")) {
+      window.location.href = "login.html";
+      return;
+    }
+    const user = sessionStorage.getItem("adminUser") || "Admin";
+    document.getElementById("adminNameSidebar").textContent = user;
+    document.getElementById("adminInitial").textContent = user.charAt(0).toUpperCase();
+    loadData();
+  });
+
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+  }
+
+  // ===== NAVIGATION =====
+  function showPage(page) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.getElementById("page-" + page).classList.add("active");
+    event.currentTarget.classList.add("active");
+
+    const titles = { dashboard: "Dashboard", data: "Data Pendaftar", rekap: "Rekap & Statistik" };
+    document.getElementById("pageTitle").textContent = titles[page];
+
+    if (page === "rekap") loadRekap();
+  }
+
+  // ===== LOAD DATA =====
+  async function loadData() {
+    showToast("Memuat data...", "info");
+    try {
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=getData`);
+      const json = await res.json();
+      allData = json.data || [];
+      filteredData = [...allData];
+      renderDashboard();
+      renderTable(filteredData);
+      showToast("Data berhasil dimuat!", "success");
+    } catch (err) {
+      showToast("Gagal memuat data!", "error");
+      document.getElementById("tbodyDashboard").innerHTML = `<tr><td colspan="5"><div class="table-empty"><i class="bi bi-wifi-off"></i>Gagal memuat data. Cek koneksi.</div></td></tr>`;
+      document.getElementById("tbodyData").innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="bi bi-wifi-off"></i>Gagal memuat data.</div></td></tr>`;
+    }
+  }
+
+  // ===== RENDER DASHBOARD =====
+  function renderDashboard() {
+    const total = allData.length;
+    const pending = allData.filter(r => !r.status || r.status === "Pending").length;
+    const proses = allData.filter(r => r.status === "Diproses").length;
+    const selesai = allData.filter(r => r.status === "Selesai").length;
+
+    document.getElementById("statTotal").textContent = total;
+    document.getElementById("statPending").textContent = pending;
+    document.getElementById("statProses").textContent = proses;
+    document.getElementById("statSelesai").textContent = selesai;
+
+    const recent = [...allData].reverse().slice(0, 8);
+    const tbody = document.getElementById("tbodyDashboard");
+    if (!recent.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="table-empty"><i class="bi bi-inbox"></i>Belum ada data</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = recent.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td class="td-nama">${r.nama || "—"}</td>
+        <td class="td-judul"><span>${r.proposal || "—"}</span></td>
+        <td>${formatDate(r.timestamp)}</td>
+        <td>${badgeStatus(r.status)}</td>
+      </tr>
+    `).join("");
+  }
+
+  // ===== RENDER TABLE =====
+  function renderTable(data) {
+    const tbody = document.getElementById("tbodyData");
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="bi bi-inbox"></i>Tidak ada data ditemukan</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${formatDate(r.timestamp)}</td>
+        <td class="td-nama">${r.nama || "—"}</td>
+        <td class="td-judul"><span>${r.proposal || "—"}</span></td>
+        <td style="font-size:12.5px">${r.lokasi || "—"}</td>
+        <td style="font-size:12.5px;color:var(--primary-light)">${r.email || "—"}</td>
+        <td>${badgeStatus(r.status)}</td>
+        <td>
+          <div class="dropdown-action">
+            <button class="btn-dots" onclick="toggleActionMenu(event, ${i})">
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="action-dropdown-menu" id="actionMenu-${i}">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalStatus(${i}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.status||'Pending'}')">
+                <i class="bi bi-arrow-repeat" style="color:var(--primary-light)"></i> Ubah Status
+              </div>
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalKonfirmasiSurat(${i})">
+                <i class="bi bi-file-earmark-text" style="color:var(--success)"></i> Generate Surat
+              </div>
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalEmail(${i}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.email||''}')">
+                <i class="bi bi-envelope" style="color:#0d6efd"></i> Kirim Email
+              </div>
+              ${r.file ? `<div class="action-dropdown-divider"></div><div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${r.file}', '_blank')"><i class="bi bi-folder2-open" style="color:var(--warning)"></i> Lihat File</div>` : ''}
+              ${r.link_surat ? `<div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${r.link_surat}', '_blank')"><i class="bi bi-eye" style="color:var(--accent)"></i> Lihat Surat</div>` : ''}
+            </div>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  // ===== FILTER =====
+  function applyFilter() {
+    const dari = document.getElementById("filterDari").value;
+    const sampai = document.getElementById("filterSampai").value;
+    const status = document.getElementById("filterStatus").value;
+
+    filteredData = allData.filter(r => {
+      const tgl = r.timestamp ? new Date(r.timestamp) : null;
+      if (dari && tgl && tgl < new Date(dari)) return false;
+      if (sampai && tgl && tgl > new Date(sampai + "T23:59:59")) return false;
+      if (status && (r.status || "Pending") !== status) return false;
+      return true;
+    });
+    renderTable(filteredData);
+    showToast(`${filteredData.length} data ditemukan`, "success");
+  }
+
+  function resetFilter() {
+    document.getElementById("filterDari").value = "";
+    document.getElementById("filterSampai").value = "";
+    document.getElementById("filterStatus").value = "";
+    filteredData = [...allData];
+    renderTable(filteredData);
+  }
+
+  // ===== SEARCH =====
+  function searchData() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const hasil = filteredData.filter(r =>
+      (r.nama || "").toLowerCase().includes(q) ||
+      (r.proposal || "").toLowerCase().includes(q) ||
+      (r.email || "").toLowerCase().includes(q)
+    );
+    renderTable(hasil);
+  }
+
+  // ===== REKAP =====
+  function loadRekap() {
+    const dari = document.getElementById("rekapDari").value;
+    const sampai = document.getElementById("rekapSampai").value;
+
+    let data = allData.filter(r => {
+      const tgl = r.timestamp ? new Date(r.timestamp) : null;
+      if (dari && tgl && tgl < new Date(dari)) return false;
+      if (sampai && tgl && tgl > new Date(sampai + "T23:59:59")) return false;
+      return true;
+    });
+
+    const statusCount = { Pending: 0, Diproses: 0, Selesai: 0, Ditolak: 0 };
+    data.forEach(r => { const s = r.status || "Pending"; if (statusCount[s] !== undefined) statusCount[s]++; });
+    document.getElementById("rekapStatus").innerHTML = Object.entries(statusCount).map(([k, v]) => `
+      <div class="rekap-item">
+        <span class="rekap-item-label">${badgeStatus(k)}</span>
+        <span class="rekap-item-value">${v}</span>
+      </div>
+    `).join("");
+
+    const opdCount = {};
+    data.forEach(r => { const o = r.lokasi || "Tidak diketahui"; opdCount[o] = (opdCount[o] || 0) + 1; });
+    const topOPD = Object.entries(opdCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    document.getElementById("rekapOPD").innerHTML = topOPD.length ? topOPD.map(([k, v]) => `
+      <div class="rekap-item">
+        <span class="rekap-item-label" style="font-size:12px">${k}</span>
+        <span class="rekap-item-value">${v}</span>
+      </div>
+    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+
+    const kampusCount = {};
+    data.forEach(r => { const k = r.nama_lembaga || "Tidak diketahui"; kampusCount[k] = (kampusCount[k] || 0) + 1; });
+    const topKampus = Object.entries(kampusCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    document.getElementById("rekapKampus").innerHTML = topKampus.length ? topKampus.map(([k, v]) => `
+      <div class="rekap-item">
+        <span class="rekap-item-label" style="font-size:12px">${k}</span>
+        <span class="rekap-item-value">${v}</span>
+      </div>
+    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+
+    const bulanCount = {};
+    const bulanIndo = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+    data.forEach(r => {
+      if (r.timestamp) {
+        const d = new Date(r.timestamp);
+        const key = `${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
+        bulanCount[key] = (bulanCount[key] || 0) + 1;
+      }
+    });
+    document.getElementById("rekapBulan").innerHTML = Object.keys(bulanCount).length ? Object.entries(bulanCount).map(([k, v]) => `
+      <div class="rekap-item">
+        <span class="rekap-item-label">${k}</span>
+        <span class="rekap-item-value">${v} pendaftar</span>
+      </div>
+    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+  }
+
+  function resetRekap() {
+    document.getElementById("rekapDari").value = "";
+    document.getElementById("rekapSampai").value = "";
+    loadRekap();
+  }
+
+  // ===== MODAL STATUS =====
+  function openModalStatus(idx, nama, status) {
+    currentRowIndex = idx;
+    document.getElementById("modalNama").textContent = nama;
+    document.getElementById("modalStatusSelect").value = status || "Pending";
+    document.getElementById("modalStatus").classList.add("show");
+  }
+
+  async function saveStatus() {
+    const status = document.getElementById("modalStatusSelect").value;
+    const row = filteredData[currentRowIndex];
+    if (!row) return;
+
+    const btn = document.querySelector("#modalStatus .btn-modal-primary");
+    btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Menyimpan...';
+    btn.disabled = true;
+    btn.classList.add("loading");
+
+    try {
+      await fetch(`${APPS_SCRIPT_URL}?action=updateStatus&rowIndex=${row.rowIndex}&status=${encodeURIComponent(status)}`);
+      row.status = status;
+      renderTable(filteredData);
+      renderDashboard();
+      closeModal("modalStatus");
+      showToast("Status berhasil diperbarui!", "success");
+    } catch (err) {
+      showToast("Gagal memperbarui status!", "error");
+    } finally {
+      btn.innerHTML = 'Simpan Status';
+      btn.disabled = false;
+      btn.classList.remove("loading");
+    }
+  }
+
+  // ===== MODAL EMAIL =====
+  function openModalEmail(idx, nama, email) {
+    currentRowIndex = idx;
+    document.getElementById("modalEmailTo").textContent = `${nama} (${email})`;
+    document.getElementById("modalEmailSubject").value = "selesai";
+    document.getElementById("modalEmailBody").value = "";
+    document.getElementById("modalEmailFile").value = "";
+    document.getElementById("fileSelectedName").style.display = "none";
+    document.getElementById("fileSelectedName").textContent = "";
+    toggleFileUpload();
+    document.getElementById("modalEmail").classList.add("show");
+  }
+
+  function toggleFileUpload() {
+    const subject = document.getElementById("modalEmailSubject").value;
+    const group = document.getElementById("fileUploadGroup");
+    group.style.display = subject === "selesai" ? "block" : "none";
+  }
+
+  function onFileSelected() {
+    const file = document.getElementById("modalEmailFile").files[0];
+    const nameEl = document.getElementById("fileSelectedName");
+    const wrap = document.getElementById("fileUploadWrap");
+    if (file) {
+      nameEl.textContent = "📎 " + file.name;
+      nameEl.style.display = "block";
+      wrap.classList.add("has-file");
+    } else {
+      nameEl.style.display = "none";
+      wrap.classList.remove("has-file");
+    }
+  }
+
+  async function sendEmail() {
+    const row = filteredData[currentRowIndex];
+    if (!row) return;
+
+    const subject = document.getElementById("modalEmailSubject").value;
+    const body    = document.getElementById("modalEmailBody").value;
+    const fileInput = document.getElementById("modalEmailFile");
+    const file    = fileInput.files[0];
+
+    const btn = document.getElementById("btnKirimEmail");
+    btn.innerHTML = '<i class="bi bi-send-fill"></i> Mengirim...';
+    btn.disabled  = true;
+    btn.classList.add("loading");
+
+    try {
+      const formData = new FormData();
+      formData.append("action",   "sendEmail");
+      formData.append("rowIndex", row.rowIndex);
+      formData.append("subject",  subject);
+      formData.append("body",     body);
+
+      // Kalau ada file lampiran, encode ke base64 dulu
+      if (subject === "selesai" && file) {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload  = () => resolve(reader.result.split(",")[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        formData.append("fileData", base64);
+        formData.append("fileName", file.name);
+        formData.append("fileMime", file.type || "application/octet-stream");
+      }
+
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body:   formData
+      });
+
+      closeModal("modalEmail");
+      showToast("Email berhasil dikirim!", "success");
+    } catch (err) {
+      showToast("Gagal mengirim email!", "error");
+    } finally {
+      btn.innerHTML = '<i class="bi bi-send-fill"></i> Kirim Email';
+      btn.disabled  = false;
+      btn.classList.remove("loading");
+    }
+  }
+
+  // ===== DROPDOWN ACTION MENU =====
+  function toggleActionMenu(event, idx) {
+    event.stopPropagation();
+    const menu = document.getElementById(`actionMenu-${idx}`);
+    const isOpen = menu.classList.contains("open");
+    closeAllMenus();
+    if (!isOpen) menu.classList.add("open");
+  }
+
+  function closeAllMenus() {
+    document.querySelectorAll(".action-dropdown-menu").forEach(m => m.classList.remove("open"));
+  }
+
+  document.addEventListener("click", closeAllMenus);
+
+  // ===== MODAL KONFIRMASI SURAT =====
+  function openModalKonfirmasiSurat(idx) {
+    currentRowIndex = idx;
+    const row = filteredData[idx];
+    document.getElementById("konfirmasiNama").textContent = row ? (row.nama || "—") : "—";
+    document.getElementById("modalKonfirmasiSurat").classList.add("show");
+  }
+
+  async function doGenerateSurat() {
+    const row = filteredData[currentRowIndex];
+    if (!row) return;
+
+    const btn = document.getElementById("btnKonfirmasiSurat");
+    btn.innerHTML = '<i class="bi bi-file-earmark-plus"></i> Membuat...';
+    btn.disabled = true;
+    btn.classList.add("loading");
+
+    try {
+      const res  = await fetch(`${APPS_SCRIPT_URL}?action=generateSurat&rowIndex=${row.rowIndex}`);
+      const data = await res.json();
+
+      closeModal("modalKonfirmasiSurat");
+
+      if (data.link) {
+        // Simpan link surat ke data lokal supaya muncul di dropdown
+        filteredData[currentRowIndex].link_surat = data.link;
+        const origIdx = allData.findIndex(r => r.rowIndex === row.rowIndex);
+        if (origIdx !== -1) allData[origIdx].link_surat = data.link;
+        renderTable(filteredData);
+
+        // Tampilkan modal surat siap
+        document.getElementById("suratSiapNama").textContent = row.nama || "—";
+        document.getElementById("btnLihatSurat").href = data.link;
+        document.getElementById("modalSuratSiap").classList.add("show");
+        showToast("Surat berhasil dibuat!", "success");
+      } else {
+        showToast("Surat sedang diproses!", "success");
+      }
+    } catch (err) {
+      showToast("Gagal membuat surat!", "error");
+      closeModal("modalKonfirmasiSurat");
+    } finally {
+      btn.innerHTML = '<i class="bi bi-file-earmark-plus"></i> Ya, Buat Surat';
+      btn.disabled = false;
+      btn.classList.remove("loading");
+    }
+  }
+
+  function openModalEmailDariSurat() {
+    const row = filteredData[currentRowIndex];
+    if (!row) return;
+    openModalEmail(currentRowIndex, row.nama || "—", row.email || "");
+    // Set subjek otomatis ke "Surat Rekomendasi Siap"
+    setTimeout(() => {
+      document.getElementById("modalEmailSubject").value = "selesai";
+      toggleFileUpload();
+    }, 50);
+  }
+
+  // ===== HELPERS =====
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("show");
+  }
+
+  function badgeStatus(status) {
+    const map = {
+      "Pending":  `<span class="badge badge-pending">⏳ Pending</span>`,
+      "Diproses": `<span class="badge badge-proses">🔄 Diproses</span>`,
+      "Selesai":  `<span class="badge badge-selesai">✅ Selesai</span>`,
+      "Ditolak":  `<span class="badge badge-ditolak">❌ Ditolak</span>`,
+    };
+    return map[status] || map["Pending"];
+  }
+
+  function formatDate(ts) {
+    if (!ts) return "—";
+    const d = new Date(ts);
+    return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  let toastTimer;
+  function showToast(msg, type = "success") {
+    const toast = document.getElementById("toast");
+    const icon = document.getElementById("toastIcon");
+    document.getElementById("toastMsg").textContent = msg;
+    toast.className = `toast ${type} show`;
+    icon.className = type === "success" ? "bi bi-check-circle-fill" : type === "error" ? "bi bi-x-circle-fill" : "bi bi-info-circle-fill";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  // Close modal on outside click
+  document.querySelectorAll(".modal-overlay").forEach(m => {
+    m.addEventListener("click", function(e) {
+      if (e.target === this) this.classList.remove("show");
+    });
+  });
+</script>
+
+</body>
+</html>

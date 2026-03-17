@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kesbangpol Kudus – Registrasi Penelitian</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a3a5c;
+      --primary-light: #2558a3;
+      --primary-dark: #0f2338;
+      --accent: #c8a951;
+      --text: #1a2b3c;
+      --muted: #6b7a8d;
+      --border: #dce4ef;
+      --bg: #f0f4f8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 15% 25%, rgba(37,88,163,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 75%, rgba(200,169,81,0.08) 0%, transparent 55%);
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(26,58,92,0.15);
+      overflow: hidden;
+      width: 100%;
+      max-width: 480px;
+      border: 1px solid rgba(200,169,81,0.15);
+      animation: fadeUp 0.5s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary) 60%, var(--primary-light));
+      padding: 36px 32px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .logo-row img {
+      height: 56px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+
+    .card-header h1 {
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 1.4;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .card-header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .card-body {
+      padding: 32px;
+    }
+
+    .card-body > p {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .choice-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 28px 16px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      background: white;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .choice-btn.admin::before {
+      background: linear-gradient(135deg, rgba(26,58,92,0.05), rgba(37,88,163,0.08));
+    }
+
+    .choice-btn.form::before {
+      background: linear-gradient(135deg, rgba(200,169,81,0.05), rgba(200,169,81,0.1));
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(26,58,92,0.15);
+    }
+
+    .choice-btn.admin:hover {
+      border-color: var(--primary-light);
+    }
+
+    .choice-btn.form:hover {
+      border-color: var(--accent);
+    }
+
+    .choice-btn:hover::before {
+      opacity: 1;
+    }
+
+    .choice-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .choice-btn.admin .choice-icon {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      box-shadow: 0 4px 14px rgba(26,58,92,0.3);
+    }
+
+    .choice-btn.form .choice-icon {
+      background: linear-gradient(135deg, #b8922a, var(--accent));
+      color: white;
+      box-shadow: 0 4px 14px rgba(200,169,81,0.35);
+    }
+
+    .choice-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .choice-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      margin-top: -6px;
+    }
+
+    footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 400px) {
+      .choice-grid { grid-template-columns: 1fr; }
+      .card-body { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="logo-row">
+        <img src="src/LOGO.png" alt="Logo Kesbangpol">
+        <img src="src/logo_berAKHLAK.png" alt="Logo BerAKHLAK">
+      </div>
+      <h1>Badan Kesatuan Bangsa<br>dan Politik Kabupaten Kudus</h1>
+      <p>Sistem Registrasi Penelitian</p>
+    </div>
+
+    <div class="card-body">
+      <p>Silakan pilih akses yang sesuai</p>
+
+      <div class="choice-grid">
+        <a href="admin/login.html" class="choice-btn admin">
+          <div class="choice-icon">
+            <i class="bi bi-shield-lock-fill"></i>
+          </div>
+          <span class="choice-label">Admin</span>
+          <span class="choice-sub">Login dashboard</span>
+        </a>
+
+        <a href="form.html" class="choice-btn form">
+          <div class="choice-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+          </div>
+          <span class="choice-label">Formulir</span>
+          <span class="choice-sub">Registrasi penelitian</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Kesbangpol Kabupaten Kudus<br>
+    Dikembangkan oleh <strong>Dimas Wahyu Damar Panuluh</strong> – Teknik Informatika, UMK
+  </footer>
+
+</body>
+</html>

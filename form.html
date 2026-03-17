@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrasi Penelitian – Kesbangpol Kudus</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="website icon" type="png" href="src/Logo_Kudus_Fix.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="header-left">
+    <img src="src/LOGO.png" alt="Logo Kesbangpol" class="logo-left">
+    <div class="header-title">
+      <p class="instansi-text">
+        Badan Kesatuan Bangsa<br>dan Politik Kabupaten Kudus
+      </p>
+    </div>
+  </div>
+  <img src="src/logo_berAKHLAK.png" alt="Logo BerAKHLAK" class="logo-right">
+</header>
+
+
+<!-- ===== MAIN CONTAINER ===== -->
+<div class="container">
+
+  <!-- Alert global error -->
+  <div id="globalError" class="alert alert-warning d-none">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    Masih ada data yang perlu dilengkapi, silakan cek kolom yang ditandai warna merah.
+  </div>
+
+  <div class="title">
+    <i class="bi bi-file-earmark-text me-2"></i>Formulir Registrasi Penelitian
+  </div>
+
+  <div class="content">
+
+    <!-- Preview ringkasan -->
+    <div id="previewBox" class="alert alert-info mb-3 d-none">
+      <strong><i class="bi bi-card-checklist me-2"></i>Ringkasan Data:</strong>
+      <ul class="mb-0 mt-2">
+        <li><b>Nama:</b> <span id="pvNama"></span></li>
+        <li><b>Judul:</b> <span id="pvJudul"></span></li>
+        <li><b>Tanggal:</b> <span id="pvTanggal"></span></li>
+        <li><b>File:</b> <span id="pvFile"></span></li>
+      </ul>
+    </div>
+
+    <form id="uploadForm" action="https://script.google.com/macros/s/AKfycbwyZ5WJGmg1qkPgjuiHGJrGzAIFNQWumpw92FBoun7S60oTYriJQ_6yxgcDFBBOqYdQ/exec" method="POST">
+      <input type="hidden" name="fileContent" id="fileContent">
+      <input type="hidden" name="filename" id="filename">
+
+      <!-- ===== SECTION 1: DATA SURAT ===== -->
+      <div class="section-group">
+        <div class="section-group-title">
+          <i class="bi bi-envelope-paper"></i> Data Surat Pengantar
+        </div>
+
+        <div class="input-box">
+          <label for="atasnama" class="form-label">Jabatan Penanggung Jawab</label>
+          <input type="text" id="atasnama" name="atasnama"
+            class="form-control required-field capitalize"
+            placeholder="Contoh: Wakil Dekan 1" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-box">
+          <label for="fakultas" class="form-label">Fakultas</label>
+          <input type="text" id="fakultas" name="fakultas"
+            class="form-control required-field capitalize"
+            placeholder="Contoh: Fakultas Teknik" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-box">
+          <label for="nama_lembaga" class="form-label">Nama Kampus / Lembaga</label>
+          <input type="text" id="nama_lembaga" name="nama_lembaga"
+            class="form-control required-field capitalize"
+            placeholder="Nama Lengkap Kampus/Lembaga" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="nomor_surat" class="form-label">Nomor Surat</label>
+            <input type="text" id="nomor_surat" name="nomor_surat"
+              class="form-control required-field capitalize"
+              placeholder="Contoh: xxx" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+          <div class="input-box half-width">
+            <label for="tgl_surat" class="form-label">Tanggal Surat Dibuat</label>
+            <div class="input-group">
+              <input type="date" id="tgl_surat" name="tgl_surat"
+                class="form-control required-field" required>
+              <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+            </div>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+        </div>
+
+        <div class="input-box">
+          <label for="perihal" class="form-label">Perihal Surat</label>
+          <div class="dropdown-icon">
+            <select id="perihal" name="perihal"
+              class="form-control required-field" required>
+              <option value="" disabled selected>Pilih Perihal</option>
+              <option value="Permohonan Izin Penelitian">Permohonan Izin Penelitian</option>
+              <option value="Permohonan Izin Penyebaran Kuesioner">Permohonan Izin Penyebaran Kuesioner</option>
+              <option value="Permohonan Izin Penelitian dan Penyebaran Kuesioner">Permohonan Izin Penelitian dan Penyebaran Kuesioner</option>
+            </select>
+            <span class="dropdown-arrow">&#9662;</span>
+          </div>
+          <small class="error-text">Wajib dipilih</small>
+        </div>
+      </div>
+
+      <!-- ===== SECTION 2: DATA PEMOHON ===== -->
+      <div class="section-group">
+        <div class="section-group-title">
+          <i class="bi bi-person-badge"></i> Data Pemohon
+        </div>
+
+        <div class="input-box">
+          <label for="nama" class="form-label">Nama Lengkap Sesuai KTP</label>
+          <input type="text" id="nama" name="nama"
+            class="form-control required-field capitalize"
+            placeholder="Nama Lengkap Pemohon" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="section-hint">
+          <i class="bi bi-info-circle me-1"></i>
+          Isi detail alamat sesuai format yang diminta.
+        </div>
+
+        <div class="input-box">
+          <label for="alamat" class="form-label">Desa / Jalan / Kelurahan</label>
+          <input type="text" id="alamat" name="alamat"
+            class="form-control required-field capitalize"
+            placeholder="Nama Desa / Jalan / Kelurahan saja" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="rukun_tetangga_rt" class="form-label">RT (3 digit)</label>
+            <input type="text" id="rukun_tetangga_rt" name="rukun_tetangga_rt"
+              class="form-control required-field"
+              placeholder="001" maxlength="3" inputmode="numeric" required
+              oninput="onlyThreeDigits(this)">
+            <small class="error-text">Harus 3 digit (contoh: 001)</small>
+          </div>
+          <div class="input-box half-width">
+            <label for="rukun_warga_rw" class="form-label">RW (3 digit)</label>
+            <input type="text" id="rukun_warga_rw" name="rukun_warga_rw"
+              class="form-control required-field"
+              placeholder="001" maxlength="3" inputmode="numeric" required
+              oninput="onlyThreeDigits(this)">
+            <small class="error-text">Harus 3 digit (contoh: 001)</small>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="kecamatan" class="form-label">Kecamatan</label>
+            <input type="text" id="kecamatan" name="kecamatan"
+              class="form-control required-field capitalize"
+              placeholder="Kecamatan" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+          <div class="input-box half-width">
+            <label for="kabupaten" class="form-label">Kabupaten</label>
+            <input type="text" id="kabupaten" name="kabupaten"
+              class="form-control required-field capitalize"
+              placeholder="Kabupaten" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+        </div>
+
+        <div class="input-box">
+          <label for="pekerjaan" class="form-label">Pekerjaan</label>
+          <input type="text" id="pekerjaan" name="pekerjaan"
+            class="form-control required-field capitalize"
+            placeholder="Pekerjaan Pemohon" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="email" class="form-label">Email Aktif</label>
+            <input type="email" id="email" name="email"
+              class="form-control required-field"
+              placeholder="email@contoh.com" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+          <div class="input-box half-width">
+            <label for="nomor_hp" class="form-label">Nomor HP / WhatsApp</label>
+            <input type="tel" id="nomor_hp" name="nomor_hp"
+              class="form-control required-field"
+              placeholder="08xxxxxxxxxx" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECTION 3: DATA PENELITIAN ===== -->
+      <div class="section-group">
+        <div class="section-group-title">
+          <i class="bi bi-journal-text"></i> Data Penelitian
+        </div>
+
+        <div class="input-box">
+          <label for="proposal" class="form-label">Judul / Nama Proposal</label>
+          <input type="text" id="proposal" name="proposal"
+            class="form-control required-field capitalize"
+            placeholder="Judul Proposal / Nama Penelitian" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+
+        <div class="input-box" id="opd-wrapper">
+          <label class="form-label">Nama OPD / Bidang Penelitian</label>
+          <div id="opd-list"></div>
+          <button type="button" class="btn-tambah-anggota" onclick="tambahOPD()">
+            <i class="bi bi-plus-circle me-1"></i> Tambah OPD
+          </button>
+          <input type="hidden" id="lokasi" name="lokasi">
+          <small class="error-text" id="opd-error-text">Wajib diisi minimal 1 OPD</small>
+        </div>
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="bidang" class="form-label">Prodi / Jurusan</label>
+            <input type="text" id="bidang" name="bidang"
+              class="form-control required-field capitalize"
+              placeholder="Prodi / Jurusan" required>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+          <div class="input-box half-width">
+            <label class="form-label">Anggota Peneliti</label>
+            <div class="dropdown-icon">
+              <select id="opsi_anggota" class="form-control required-field" required onchange="toggleAnggota()">
+                <option value="">-- Pilih --</option>
+                <option value="-">Tidak Ada</option>
+                <option value="ada">Ada</option>
+              </select>
+              <span class="dropdown-arrow">&#9662;</span>
+            </div>
+            <small class="error-text">Wajib dipilih</small>
+          </div>
+        </div>
+
+        <div class="input-box" id="anggota-wrapper" style="display:none">
+          <label class="form-label">Daftar Nama Anggota Peneliti</label>
+          <div id="anggota-list"></div>
+          <button type="button" class="btn-tambah-anggota" onclick="tambahAnggota()">
+            <i class="bi bi-plus-circle me-1"></i> Tambah Anggota
+          </button>
+          <input type="hidden" id="anggota_peneliti" name="anggota_peneliti">
+          <small class="error-text" id="anggota-error-text">Wajib diisi minimal 1 anggota</small>
+        </div>
+
+
+        <div class="input-row">
+          <div class="input-box half-width">
+            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
+            <div class="input-group">
+              <input type="date" id="tanggal_mulai" name="tanggal_mulai"
+                class="form-control required-field" required>
+              <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+            </div>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+          <div class="input-box half-width">
+            <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
+            <div class="input-group">
+              <input type="date" id="tanggal_selesai" name="tanggal_selesai"
+                class="form-control required-field" required>
+              <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
+            </div>
+            <small class="error-text">Wajib diisi</small>
+          </div>
+        </div>
+        <div class="section-hint">
+          <i class="bi bi-clock-history me-1"></i>
+          Durasi penelitian maksimal 6 bulan dari tanggal mulai.
+        </div>
+
+        <div class="input-box">
+          <label for="penanggung_jawab" class="form-label">Nama & Gelar Penanggung Jawab Surat</label>
+          <input type="text" id="penanggung_jawab" name="penanggung_jawab"
+            class="form-control required-field capitalize"
+            placeholder="Nama lengkap yang bertanda tangan di surat kampus" required>
+          <small class="error-text">Wajib diisi</small>
+        </div>
+      </div>
+
+      <!-- ===== SECTION 4: UPLOAD BERKAS ===== -->
+      <div class="section-group">
+        <div class="section-group-title">
+          <i class="bi bi-cloud-arrow-up"></i> Upload Berkas
+        </div>
+
+        <div class="input-box">
+          <label for="file" class="form-label">Unggah Semua File Jadi 1 Berkas (.zip / .rar)</label>
+          <div class="d-flex align-items-center flex-column mb-3">
+            <img src="src/CONTOH_FORMAT_DATA_YANG_HARUS_DIKIRIM.jpg" alt="Contoh Format File"
+              class="img-thumbnail me-3" style="width: 100%; max-width: 440px; height: auto; margin-bottom: 12px;">
+            <a href="https://drive.google.com/file/d/1VrNJRBHT4i6os6cPAMw77hsakKiP4Ui_/view?usp=sharing"
+              target="_blank" class="btn btn-primary mb-3">
+              <i class="bi bi-eye me-2"></i>Klik Ini Untuk Lebih Jelasnya
+            </a>
+          </div>
+          <div class="file-upload-area">
+            <input id="attach" name="attach" type="file"
+              class="form-control ms-0" accept=".zip,.rar" required>
+          </div>
+          <small class="error-text">Wajib unggah file</small>
+        </div>
+      </div>
+
+      <!-- ===== TOMBOL ===== -->
+      <div class="button-container">
+        <div class="btn-row-top">
+          <button type="button" class="btn-submit" onclick="showFileNotification();">
+            <i class="bi bi-send-fill"></i>
+            <span id="btn-text">Kirim Data</span>
+            <div id="loading-spinner" class="spinner-border spinner-border-sm ms-1 d-none" role="status"></div>
+          </button>
+          <button type="button" class="btn-reset" onclick="konfirmasiReset()">
+            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Formulir
+          </button>
+        </div>
+        <div class="btn-row-bottom">
+          <button type="button" class="btn-back-form" onclick="konfirmasiKembali()">
+            <i class="bi bi-house me-2"></i>Menu Utama
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Kontak Bantuan -->
+    <div class="contact-us">
+      <p>Belum punya Surat Pernyataan/Surat Permohonan, atau kesulitan dengan alur pengajuan? </p>
+      <p>Lihat panduan & download Surat Pernyataan di sini:</p>
+      <div class="social-links">
+        <div class="social-link">
+          <a href="https://www.instagram.com/s/aGlnaGxpZ2h0OjE4NDA5NjE2NDEzMDc0MzYy?story_media_id=3429253493271934387_44729739981&igsh=MWdzZTZ2OXhkYzF0cQ==" target="_blank">
+            <img src="src/instagram_logo.png" alt="Instagram" class="social-icon">
+          </a>
+          <strong>Sorotan Instagram</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-us">
+      <p>Butuh bantuan lain? Hubungi kami:</p>
+      <div class="social-links">
+        <div class="social-link">
+          <a href="https://www.instagram.com/kesbangpol.kudus?igsh=MTZybzUxNmgzYm9vNg==" target="_blank">
+            <img src="src/instagram_logo.png" alt="Instagram" class="social-icon">
+          </a>
+          <strong>Instagram</strong>
+        </div>
+        <div class="social-link">
+          <a href="https://wa.me/6285283835544" target="_blank">
+            <img src="src/whatsapp_logo.png" alt="WhatsApp" class="social-icon">
+          </a>
+          <strong>WhatsApp</strong>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /container -->
+
+<!-- ===== NOTIFICATION: Sukses ===== -->
+<div id="notification" class="notification d-none">
+  <div style="font-size:40px; margin-bottom:12px;">✅</div>
+  <strong style="font-size:16px;">Terima Kasih!</strong>
+  <p style="margin-top:10px;">
+    Terima kasih telah mengisi formulir registrasi penelitian. Kami akan segera memproses data Anda dan mengirimkan hasilnya melalui <strong>Email</strong>.
+  </p>
+  <button onclick="location.reload();" class="btn-refresh">OK, Tutup</button>
+</div>
+
+<!-- ===== NOTIFICATION: Konfirmasi File ===== -->
+<div id="fileNotification" class="notification d-none">
+  <div style="font-size:32px; margin-bottom:10px;">📁</div>
+  <strong style="font-size:15px;">Pastikan File ZIP/RAR Berisi:</strong>
+  <ul>
+    <li>KTP</li>
+    <li>Surat Pernyataan</li>
+    <li>Surat Permohonan dari Pemohon</li>
+    <li>Surat Pengantar dari Kampus/Lembaga</li>
+    <li>Proposal Penelitian</li>
+  </ul>
+  <p>Semua file dalam format <strong>PDF</strong>. Pastikan email dan nomor HP sudah benar.</p>
+  <div class="button-container">
+    <button onclick="hideFileNotification();" class="btn-refresh" style="background: #6c757d;">
+      ✏️ Edit Data
+    </button>
+    <button onclick="proceedToUpload();" class="btn-refresh">
+      🚀 Kirim Sekarang
+    </button>
+  </div>
+</div>
+
+<!-- ===== MODAL LOADING ===== -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content loading-modal-content">
+      <div class="modal-body text-center loading-modal-body">
+
+        <!-- Animasi lingkaran -->
+        <div class="loading-ring">
+          <div class="loading-ring-inner"></div>
+          <div class="loading-icon">📤</div>
+        </div>
+
+        <p class="loading-title">Sedang Mengirim Data...</p>
+        <p class="loading-subtitle">Mohon tunggu, jangan tutup halaman ini.</p>
+
+        <!-- Progress bar animasi -->
+        <div class="loading-progress-bar">
+          <div class="loading-progress-fill" id="loadingProgressFill"></div>
+        </div>
+        <p class="loading-progress-label" id="loadingProgressLabel">Mempersiapkan data...</p>
+
+        <!-- Tips -->
+        <div class="loading-tips">
+          <p class="loading-tips-label">💡 Tahukah kamu?</p>
+          <p class="loading-tips-text" id="loadingTipsText">Proses pengiriman biasanya memakan waktu 10–30 detik tergantung ukuran file.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/script.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  function konfirmasiKembali() {
+    if (confirm('Yakin ingin kembali ke menu utama?\nData yang sudah diisi akan hilang.')) {
+      window.location.href = 'index.html';
+    }
+  }
+
+  function konfirmasiReset() {
+    if (confirm('Yakin ingin mereset formulir?\nSemua data yang sudah diisi akan dihapus dan tidak bisa dikembalikan.')) {
+      document.getElementById('uploadForm').reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+</script>
+
+<!-- ===== POPUP MODAL ===== -->
+<!-- ===== POPUP MODAL ===== -->
+<div id="popupModal" class="popup-modal">
+  <div class="popup-content">
+
+    <img src="src/NEW_LOGO.jpg" alt="Logo Kesbangpol Kudus" class="popup-image">
+    <div class="popup-welcome-badge">Selamat Datang 👋</div>
+    <h2 class="popup-title">Formulir Registrasi Penelitian</h2>
+    <div class="popup-divider"></div>
+
+    <div class="popup-tips">
+      <div class="popup-tip-item">
+        <span class="popup-tip-icon">📋</span>
+        <div>
+          <strong>Siapkan berkas berikut:</strong>
+          <ul class="popup-tip-list">
+            <li>KTP</li>
+            <li>Surat Pengantar dari Kampus</li>
+            <li>Proposal Penelitian</li>
+            <li>Surat Pernyataan</li>
+            <li>Surat Permohonan</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-tips">
+      <div class="popup-tip-item">
+        <span class="popup-tip-icon">📄</span>
+        <span>Belum punya <strong>Surat Pernyataan & Surat Permohonan</strong>? Unduh & isi terlebih dahulu melalui <strong>Sorotan Instagram</strong> kami — link tersedia di bagian bawah formulir.</span>
+      </div>
+    </div>
+
+    <div class="popup-tips">
+      <div class="popup-tip-item">
+        <span class="popup-tip-icon">📁</span>
+        <span>Gabungkan semua menjadi <strong>1 file ZIP/RAR</strong></span>
+      </div>
+    </div>
+
+    <button class="popup-ok" onclick="closePopup()">
+      <i class="bi bi-arrow-right-circle me-2"></i>Mulai Mengisi Formulir
+    </button>
+
+    <a href="index.html" class="popup-back">
+      <i class="bi bi-arrow-left me-1"></i>Kembali ke Menu Utama
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 Badan Kesatuan Bangsa dan Politik Kabupaten Kudus. Seluruh hak cipta dilindungi undang-undang.<br>
+  Dikembangkan oleh <strong>Dimas Wahyu Damar Panuluh</strong> – Teknik Informatika, Universitas Muria Kudus.
+</footer>
+
+</body>
+</html>
