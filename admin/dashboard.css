@@ -112,6 +112,29 @@ body {
   border-left: 3px solid var(--accent);
 }
 
+.nav-badge {
+  margin-left: auto;
+  background: #e74c3c;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  line-height: 1;
+  animation: pulse-badge 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.1); opacity: 0.85; }
+}
+
 .sidebar-footer {
   padding: 16px 12px;
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -718,7 +741,36 @@ tbody td {
   opacity: 0.9;
 }
 
-/* ===== ANIMASI SWEEP FILL ===== */
+/* ===== SORT BUTTON ===== */
+.btn-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-sort:hover {
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  background: white;
+}
+
+.btn-sort.sort-desc {
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  background: #e6f1fb;
+}
+
 @keyframes sweep {
   0%   { width: 0%; }
   85%  { width: 100%; }
@@ -908,6 +960,29 @@ tbody td {
 .rekap-item-label { color: var(--muted); font-weight: 500; }
 .rekap-item-value { font-weight: 700; color: var(--text); }
 
+/* ===== REKAP EMPTY STATE ===== */
+.rekap-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.rekap-empty i {
+  font-size: 28px;
+  opacity: 0.3;
+}
+
+.rekap-empty span {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
 /* ===== LOADING SPINNER ===== */
 .loading-state {
   text-align: center;
@@ -936,6 +1011,18 @@ tbody td {
   .main { margin-left: 64px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .rekap-grid { grid-template-columns: 1fr; }
+
+  /* Badge tetap muncul di pojok kanan atas icon saat sidebar collapse */
+  .nav-item { position: relative; }
+  .nav-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    margin-left: 0;
+    min-width: 16px;
+    height: 16px;
+    font-size: 9px;
+  }
 }
 
 @media (max-width: 600px) {

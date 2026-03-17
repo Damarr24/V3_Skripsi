@@ -260,7 +260,7 @@ function UploadFile() {
     let file = fileInput.files[0];
 
     if (!file) {
-        alert("Silakan pilih file sebelum mengirim!");
+        showCustomAlert("Kamu belum memilih file! Silakan pilih file <strong>ZIP atau RAR</strong> terlebih dahulu.", "File Belum Dipilih", "📁");
         return;
     }
 
@@ -268,7 +268,7 @@ function UploadFile() {
     const fileExt = file.name.split(".").pop().toLowerCase();
 
     if (!allowedExt.includes(fileExt)) {
-        alert("Format file harus ZIP atau RAR!");
+        showCustomAlert("Format file tidak sesuai! File harus berformat <strong>ZIP atau RAR</strong>.", "Format Salah", "❌");
         return;
     }
 
@@ -344,7 +344,7 @@ function UploadFile() {
             }, 600);
         })
         .catch(() => {
-            alert("Gagal mengirim data. Silakan coba lagi.");
+            showCustomAlert("Gagal mengirim data. Periksa koneksi internet kamu dan coba lagi.", "Gagal Mengirim", "❌");
         })
         .finally(() => {
             clearInterval(progressInterval);
@@ -400,13 +400,63 @@ document.addEventListener("DOMContentLoaded", function () {
         limit.setMonth(limit.getMonth() + 6);
 
         if (new Date(end.value) > limit) {
-            alert("Durasi penelitian maksimal 6 bulan.");
+            showCustomAlert("Durasi penelitian maksimal <strong>6 bulan</strong> dari tanggal mulai.", "Tanggal Tidak Valid", "📅");
             end.value = "";
         }
     });
 });
 
-// ===== NOTIFIKASI ANTI-REFRESH =====
+// ===== CUSTOM MODAL FUNCTIONS =====
+function showCustomAlert(msg, title = "Perhatian", icon = "⚠️") {
+  document.getElementById("customAlertMsg").innerHTML = msg;
+  document.getElementById("customAlertTitle").textContent = title;
+  document.getElementById("customAlertIcon").textContent = icon;
+  document.getElementById("customAlert").style.display = "flex";
+}
+
+function closeCustomAlert() {
+  document.getElementById("customAlert").style.display = "none";
+}
+
+function konfirmasiReset() {
+  document.getElementById("customConfirmReset").style.display = "flex";
+}
+
+function closeCustomConfirmReset() {
+  document.getElementById("customConfirmReset").style.display = "none";
+}
+
+function doReset() {
+  closeCustomConfirmReset();
+  document.getElementById("uploadForm").reset();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function konfirmasiKembali() {
+  document.getElementById("customConfirmBack").style.display = "flex";
+}
+
+function closeCustomConfirmBack() {
+  document.getElementById("customConfirmBack").style.display = "none";
+}
+
+function doKembali() {
+  formDiisi = false;
+  window.location.href = "index.html";
+}
+
+// Tutup modal kalau klik di luar box
+document.addEventListener("DOMContentLoaded", function () {
+  ["customAlert", "customConfirmReset", "customConfirmBack"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("click", function (e) {
+        if (e.target === this) this.style.display = "none";
+      });
+    }
+  });
+});
+
 let formDiisi = false;
 
 // Deteksi kalau user sudah mulai mengisi form

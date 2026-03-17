@@ -989,6 +989,8 @@ footer {
 
   .container {
     border-radius: 14px;
+    margin: 12px 8px;
+    width: calc(100% - 16px);
   }
 
   .title {
@@ -1009,8 +1011,19 @@ footer {
     width: 100%;
   }
 
-  .button-container {
+  /* button-container sudah flex-direction:column, btn-row-top tetap flex row */
+  .btn-row-top {
     flex-direction: column;
+  }
+
+  .btn-row-top .btn-submit,
+  .btn-row-top .btn-reset {
+    width: 100%;
+  }
+
+  .btn-back-form {
+    width: 100%;
+    justify-content: center;
   }
 
   .notification {
@@ -1021,15 +1034,15 @@ footer {
 
   .popup-content {
     padding: 20px 16px 12px 16px;
-    max-height: 70vh;
+    max-height: 85vh;
   }
 
   .popup-wrapper {
-    width: 92%;
+    width: 96%;
   }
 
   .popup-image {
-    height: 200px;
+    height: 160px;
   }
 
   .popup-divider {
@@ -1048,10 +1061,43 @@ footer {
   .popup-ok {
     padding: 14px 20px;
     font-size: 14px;
+    width: 100%;
+  }
+
+  .popup-back {
+    font-size: 13px;
+    padding: 8px 0;
   }
 
   .section-group {
     padding: 18px 14px;
+  }
+
+  /* Form label & input lebih nyaman di HP */
+  .form-label {
+    font-size: 13px;
+  }
+
+  .form-control, .form-select {
+    font-size: 16px !important; /* mencegah zoom otomatis Safari iOS */
+    padding: 10px 14px;
+  }
+
+  .input-group-text {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  /* Section title lebih kecil */
+  .section-group-title {
+    font-size: 13px;
+  }
+
+  /* Kontak sosial */
+  .social-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 }
 
@@ -1180,4 +1226,129 @@ footer {
   border-color: var(--primary);
   color: var(--primary);
   background: #f0f4f8;
+}
+
+/* ===== CUSTOM MODAL (alert & confirm) ===== */
+.custom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeInOverlay 0.2s ease;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.custom-modal-box {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(200, 169, 81, 0.15);
+}
+
+.custom-modal-icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.custom-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.custom-modal-msg {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.custom-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.custom-modal-btn-primary {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.custom-modal-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.custom-modal-btn-cancel {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 20px;
+  background: white;
+  color: #6b7a8d;
+  border: 2px solid #dce4ef;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.custom-modal-btn-cancel:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.custom-modal-btn-danger {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.custom-modal-btn-danger:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 576px) {
+  .custom-modal-box {
+    padding: 24px 20px;
+  }
+  .custom-modal-actions {
+    flex-direction: column;
+  }
 }
