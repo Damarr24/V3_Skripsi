@@ -989,13 +989,14 @@ footer {
 
   .container {
     border-radius: 14px;
-    margin: 12px 8px;
+    margin: 78px 8px 16px;
     width: calc(100% - 16px);
   }
 
   .title {
-    font-size: 18px;
-    padding: 22px 20px 18px;
+    font-size: 15px;
+    padding: 20px 16px 16px;
+    letter-spacing: 0.5px;
   }
 
   .content {
@@ -1095,9 +1096,10 @@ footer {
 
   /* Kontak sosial */
   .social-links {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
   }
 }
 
