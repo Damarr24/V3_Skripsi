@@ -101,9 +101,13 @@ document.addEventListener("input", function (e) {
         }
     }
 
-    // kapital otomatis
+    // kapital otomatis — pakai selectionRange biar kursor tidak loncat
     if (e.target.classList.contains("capitalize")) {
-        e.target.value = e.target.value.replace(/\b\w/g, c => c.toUpperCase());
+        const el = e.target;
+        const start = el.selectionStart;
+        const end   = el.selectionEnd;
+        el.value = el.value.replace(/\b\w/g, c => c.toUpperCase());
+        el.setSelectionRange(start, end);
     }
 });
 
@@ -172,7 +176,10 @@ function updateAnggotaHidden() {
 }
 
 function capitalizeInput(el) {
+    const start = el.selectionStart;
+    const end   = el.selectionEnd;
     el.value = el.value.replace(/\b\w/g, c => c.toUpperCase());
+    el.setSelectionRange(start, end);
 }
 
 
@@ -429,6 +436,25 @@ function closeCustomConfirmReset() {
 function doReset() {
   closeCustomConfirmReset();
   document.getElementById("uploadForm").reset();
+
+  // Reset OPD list — hapus semua, tambah 1 field kosong
+  document.getElementById("opd-list").innerHTML = "";
+  tambahOPD();
+  document.getElementById("opd-wrapper").classList.remove("error");
+
+  // Reset anggota list
+  document.getElementById("anggota-list").innerHTML = "";
+  document.getElementById("anggota-wrapper").style.display = "none";
+  document.getElementById("anggota-wrapper").classList.remove("error");
+
+  // Sembunyikan preview box & global error
+  document.getElementById("previewBox").classList.add("d-none");
+  const ge = document.getElementById("globalError");
+  if (ge) ge.classList.add("d-none");
+
+  // Bersihkan semua error state
+  document.querySelectorAll(".input-box.error").forEach(el => el.classList.remove("error"));
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -480,3 +506,53 @@ window.addEventListener("beforeunload", function(e) {
 function matikanAntiRefresh() {
     formDiisi = false;
 }
+
+// ===== DRAG & DROP visual state untuk file upload =====
+(function() {
+    const area = document.querySelector(".file-upload-area");
+    if (!area) return;
+    ["dragenter","dragover"].forEach(ev => {
+        area.addEventListener(ev, e => { e.preventDefault(); area.classList.add("dragover"); });
+    });
+    ["dragleave","drop"].forEach(ev => {
+        area.addEventListener(ev, () => area.classList.remove("dragover"));
+    });
+})();
+
+// ===== RIPPLE EFFECT pada tombol submit =====
+(function() {
+    const btn = document.querySelector(".btn-submit");
+    if (!btn) return;
+    btn.addEventListener("click", function(e) {
+        const circle = document.createElement("span");
+        const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+        const radius   = diameter / 2;
+        const rect     = btn.getBoundingClientRect();
+        circle.style.cssText = `
+            width:${diameter}px; height:${diameter}px;
+            left:${e.clientX - rect.left - radius}px;
+            top:${e.clientY - rect.top - radius}px;
+        `;
+        circle.classList.add("ripple");
+        btn.querySelector(".ripple")?.remove();
+        btn.appendChild(circle);
+    });
+})();
+
+// ===== SCROLL ENTRANCE ANIMATION untuk section-group =====
+(function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("section-visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll(".section-group").forEach((el, i) => {
+        el.style.animationDelay = `${i * 0.07}s`;
+        el.classList.add("section-hidden");
+        observer.observe(el);
+    });
+})();

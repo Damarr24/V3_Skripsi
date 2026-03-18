@@ -77,7 +77,7 @@
 
     async function doLogin() {
       const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const password = document.getElementById("password").value; // ← tidak di-trim, spasi valid
       const errorMsg = document.getElementById("errorMsg");
       const errorText = document.getElementById("errorText");
       const btn = document.querySelector(".btn-login");
@@ -94,7 +94,9 @@
       errorMsg.classList.remove("show");
 
       try {
-        const res = await fetch(`${APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        // Pakai POST agar kredensial tidak muncul di URL/log
+        const body = new URLSearchParams({ action: "login", username, password });
+        const res = await fetch(APPS_SCRIPT_URL, { method: "POST", body });
         const data = await res.json();
 
         if (data.success) {

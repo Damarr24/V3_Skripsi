@@ -1,10 +1,15 @@
 function doPost(e) {
+  // ===== LOGIN ADMIN via POST (aman, tidak lewat URL) =====
+  if (e.parameter.action === "login") {
+    return handleLogin(e);
+  }
+
   // ===== KIRIM EMAIL DARI DASHBOARD (POST) =====
   if (e.parameter.action === "sendEmail") {
     return handleSendEmail(e);
   }
 
-  // ===== FORM PENDAFTARAN (tidak diubah) =====
+  // ===== FORM PENDAFTARAN =====
   try {
         var data = e.parameter.fileContent;
         var filename = e.parameter.filename;
@@ -79,72 +84,6 @@ function formatTanggalIndonesia(date) {
   const tahun = d.getFullYear();
 
   return `${tanggal} ${bulan} ${tahun}`;
-}
-
-function generateSurat() {
-  const SPREADSHEET_ID = "1p5vDE8-dQbLxQbaxeE9nknDQ0W53QBqibE9qxmOa-0Q";
-  const SHEET_NAME = "Data";
-
-  const TEMPLATE_ID = "1Q3hlI1prise-DRQLj-TXxvFlD-MZR_5nlxIDRpZGXuQ";
-  const FOLDER_ID = "1p4j741DW88_6w4nLcobhnOwdTNiAgbuR";
-
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) throw new Error("Sheet 'Data' tidak ditemukan");
-
-  const data = sheet.getDataRange().getValues();
-  if (data.length < 2) return;
-
-  const headers = data[0].map(h => h.toString().toLowerCase().trim());
-  const colLink = headers.indexOf("link_surat");
-  if (colLink === -1) throw new Error("Kolom 'link_surat' tidak ada");
-
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][colLink]) continue;
-
-    const row = {};
-    headers.forEach((h, idx) => row[h] = data[i][idx]);
-
-    const copy = DriveApp.getFileById(TEMPLATE_ID).makeCopy(
-      `Surat Penelitian - ${row.nama || "Tanpa Nama"}`,
-      DriveApp.getFolderById(FOLDER_ID)
-    );
-
-    const doc = DocumentApp.openById(copy.getId());
-    const body = doc.getBody();
-
-    body.replaceText("{{atasnama}}", row.atasnama || "");
-    body.replaceText("{{fakultas}}", row.fakultas || "");
-    body.replaceText("{{nama_lembaga}}", row.nama_lembaga || "");
-    body.replaceText("{{nomor_surat}}", row.nomor_surat || "");
-    body.replaceText("{{perihal}}", row.perihal || "");
-    body.replaceText("{{nama}}", row.nama || "");
-    body.replaceText("{{alamat}}", row.alamat || "");
-    body.replaceText("{{rukun_tetangga_rt}}", row.rukun_tetangga_rt || "");
-    body.replaceText("{{rukun_warga_rw}}", row.rukun_warga_rw || "");
-    body.replaceText("{{kecamatan}}", row.kecamatan || "");
-    body.replaceText("{{kabupaten}}", row.kabupaten || "");
-    body.replaceText("{{pekerjaan}}", row.pekerjaan || "");
-    body.replaceText("{{email}}", row.email || "");
-    body.replaceText("{{nomor_hp}}", row.nomor_hp || "");
-    body.replaceText("{{proposal}}", row.proposal || "");
-    body.replaceText("{{lokasi}}", row.lokasi || "");
-    body.replaceText("{{bidang}}", row.bidang || "");
-    body.replaceText("{{penanggung_jawab}}", row.penanggung_jawab || "");
-    body.replaceText("{{anggota_peneliti}}", row.anggota_peneliti || "");
-
-    const tglSurat   = row.tgl_surat       ? formatTanggalIndonesia(row.tgl_surat)       : "";
-    const tglMulai   = row.tanggal_mulai   ? formatTanggalIndonesia(row.tanggal_mulai)   : "";
-    const tglSelesai = row.tanggal_selesai ? formatTanggalIndonesia(row.tanggal_selesai) : "";
-
-    body.replaceText("{{tgl_surat}}", tglSurat);
-    body.replaceText("{{tanggal_mulai}}", tglMulai);
-    body.replaceText("{{tanggal_selesai}}", tglSelesai);
-    body.replaceText("{{file}}", row.file || "");
-
-    doc.saveAndClose();
-    sheet.getRange(i + 1, colLink + 1).setValue(copy.getUrl());
-  }
 }
 
 function kirimEmailKonfirmasi(e) {
@@ -323,7 +262,6 @@ function handleSendEmail(e) {
  
     const subjects = {
       "selesai": "✅ Surat Rekomendasi Penelitian Siap – Kesbangpol Kudus",
-      "update":  "Update Status Pendaftaran Penelitian – Kesbangpol Kudus",
       "info":    "Informasi Tambahan Diperlukan – Kesbangpol Kudus",
       "ditolak": "Informasi Pendaftaran Penelitian – Kesbangpol Kudus",
       "custom":  "Pesan dari Kesbangpol Kudus"

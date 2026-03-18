@@ -881,69 +881,6 @@ textarea.form-control {
   box-shadow: 0 6px 18px rgba(26,58,92,0.35);
 }
 
-/* ====== DYNAMIC ANGGOTA PENELITI ====== */
-.anggota-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.anggota-nomor {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--primary);
-  min-width: 22px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.anggota-row .form-control {
-  flex: 1;
-  margin: 0;
-}
-
-.btn-hapus-anggota {
-  background: #fff0f1;
-  border: 2px solid #f5c6cb;
-  color: var(--danger);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: var(--transition);
-  flex-shrink: 0;
-}
-
-.btn-hapus-anggota:hover {
-  background: var(--danger);
-  color: white;
-  border-color: var(--danger);
-}
-
-.btn-tambah-anggota {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  padding: 9px 18px;
-  background: #eef5ff;
-  color: var(--primary-light);
-  border: 2px dashed var(--primary-light);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.btn-tambah-anggota:hover {
-  background: var(--primary-light);
-  color: white;
-  border-style: solid;
-}
-
 /* ====== FOOTER ====== */
 footer {
   width: 100%;
@@ -1353,4 +1290,116 @@ footer {
   .custom-modal-actions {
     flex-direction: column;
   }
+}
+/* ====== RIPPLE EFFECT ====== */
+.btn-submit {
+  position: relative;
+  overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.32);
+  transform: scale(0);
+  animation: rippleAnim 0.55s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ====== SCROLL ENTRANCE ANIMATION ====== */
+.section-hidden {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.section-visible {
+  animation: sectionEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes sectionEnter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== SECTION GROUP HOVER ====== */
+.section-group {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.section-group:hover {
+  box-shadow: 0 6px 24px rgba(26,58,92,0.09);
+  transform: translateY(-1px);
+}
+
+/* ====== ERROR SHAKE ====== */
+.input-box.error .form-control,
+.input-box.error select,
+.input-box.error .file-upload-area {
+  animation: shakeX 0.35s ease;
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* ====== SMOOTH FOCUS GLOW ====== */
+.form-control:focus,
+select.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(37, 88, 163, 0.13), 0 1px 4px rgba(26,58,92,0.1) !important;
+  border-color: var(--primary-light) !important;
+  background: #fafcff !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+/* ====== INPUT GROUP TRANSITION ====== */
+.input-group-text {
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.input-group:focus-within .input-group-text {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+}
+
+/* ====== FILE UPLOAD DRAG STATE ====== */
+.file-upload-area.dragover {
+  border-color: var(--primary-light);
+  background: #eef5ff;
+  box-shadow: 0 0 0 3px rgba(37,88,163,0.12);
+}
+
+/* ====== SOCIAL ICON HOVER ====== */
+.social-link:hover .social-icon {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-md);
+}
+.social-icon {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ====== SUCCESS NOTIFICATION — fix posisi fixed + animasi ====== */
+#notification {
+  animation: successPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes successPop {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 28px)) scale(0.92); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ====== POPUP MODAL entrance ====== */
+#popupModal .popup-content {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.88) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ====== LOADING MODAL entrance ====== */
+.loading-modal-content {
+  animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

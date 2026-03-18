@@ -329,6 +329,17 @@
 <script>
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyZ5WJGmg1qkPgjuiHGJrGzAIFNQWumpw92FBoun7S60oTYriJQ_6yxgcDFBBOqYdQ/exec";
 
+  // ===== ESCAPE HTML — cegah XSS dari input pemohon =====
+  function escHtml(s) {
+    if (!s) return "—";
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   let allData = [];
   let filteredData = [];
   let currentRow = null;
@@ -411,8 +422,8 @@
     tbody.innerHTML = recent.map((r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td class="td-nama">${r.nama || "—"}</td>
-        <td class="td-judul"><span>${r.proposal || "—"}</span></td>
+        <td class="td-nama">${escHtml(r.nama)}</td>
+        <td class="td-judul"><span>${escHtml(r.proposal)}</span></td>
         <td>${formatDate(r.timestamp)}</td>
         <td>${badgeStatus(r.status)}</td>
       </tr>
@@ -430,10 +441,10 @@
       <tr>
         <td>${i + 1}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${formatDate(r.timestamp)}</td>
-        <td class="td-nama">${r.nama || "—"}</td>
-        <td class="td-judul"><span>${r.proposal || "—"}</span></td>
-        <td style="font-size:12.5px">${r.lokasi || "—"}</td>
-        <td style="font-size:12.5px;color:var(--primary-light)">${r.email || "—"}</td>
+        <td class="td-nama">${escHtml(r.nama)}</td>
+        <td class="td-judul"><span>${escHtml(r.proposal)}</span></td>
+        <td style="font-size:12.5px">${escHtml(r.lokasi)}</td>
+        <td style="font-size:12.5px;color:var(--primary-light)">${escHtml(r.email)}</td>
         <td>${badgeStatus(r.status)}</td>
         <td>
           <div class="dropdown-action">
@@ -728,11 +739,20 @@
     const menu = document.getElementById(`actionMenu-${idx}`);
     const isOpen = menu.classList.contains("open");
     closeAllMenus();
-    if (!isOpen) menu.classList.add("open");
+    if (!isOpen) {
+      menu.classList.add("open");
+      // Naikan z-index baris yang aktif supaya dropdown tidak terkubur baris bawahnya
+      const tr = menu.closest("tr");
+      if (tr) tr.classList.add("dropdown-active");
+    }
   }
 
   function closeAllMenus() {
-    document.querySelectorAll(".action-dropdown-menu").forEach(m => m.classList.remove("open"));
+    document.querySelectorAll(".action-dropdown-menu.open").forEach(m => {
+      m.classList.remove("open");
+      const tr = m.closest("tr");
+      if (tr) tr.classList.remove("dropdown-active");
+    });
   }
 
   document.addEventListener("click", closeAllMenus);

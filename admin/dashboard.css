@@ -400,7 +400,7 @@ body {
   background: white;
   border: 1px solid var(--border);
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible; /* jangan hidden — akan clip dropdown */
 }
 
 .table-header {
@@ -439,7 +439,7 @@ body {
   background-color: white;
 }
 
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; overflow-y: visible; }
 
 table {
   width: 100%;
@@ -460,13 +460,24 @@ thead th {
   white-space: nowrap;
 }
 
+/* Pastikan border-radius header tetap bagus meski overflow: visible */
+thead tr:first-child th:first-child { border-top-left-radius: 13px; }
+thead tr:first-child th:last-child  { border-top-right-radius: 13px; }
+
 tbody tr {
   border-bottom: 1px solid #f0f4f8;
   transition: background 0.15s;
+  /* jangan position:relative di sini — bikin stacking context yg mengubur dropdown */
 }
 
 tbody tr:hover { background: #fafcff; }
 tbody tr:last-child { border-bottom: none; }
+
+/* Row yang dropdownnya sedang terbuka naik z-indexnya */
+tbody tr.dropdown-active {
+  position: relative;
+  z-index: 500;
+}
 
 tbody td {
   padding: 13px 16px;
@@ -538,13 +549,19 @@ tbody td {
   border: 1px solid var(--border);
   border-radius: 12px;
   min-width: 170px;
-  z-index: 200;
+  z-index: 9999; /* cukup tinggi agar tidak tertutup row lain */
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(26,58,92,0.12);
+  box-shadow: 0 8px 24px rgba(26,58,92,0.15);
 }
 
 .action-dropdown-menu.open {
   display: block;
+  animation: dropdownOpen 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .action-dropdown-item {
@@ -1001,6 +1018,55 @@ tbody td {
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== REFRESH BUTTON — icon berputar saat hover ===== */
+.btn-refresh:hover i {
+  animation: spinOnce 0.5s ease;
+}
+@keyframes spinOnce {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===== STAT CARD — entrance stagger ===== */
+.stats-grid .stat-card {
+  animation: statFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stats-grid .stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stats-grid .stat-card:nth-child(2) { animation-delay: 0.12s; }
+.stats-grid .stat-card:nth-child(3) { animation-delay: 0.19s; }
+.stats-grid .stat-card:nth-child(4) { animation-delay: 0.26s; }
+
+@keyframes statFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== REKAP CARD — entrance ===== */
+.rekap-grid .rekap-card {
+  animation: statFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.rekap-grid .rekap-card:nth-child(1) { animation-delay: 0.05s; }
+.rekap-grid .rekap-card:nth-child(2) { animation-delay: 0.12s; }
+.rekap-grid .rekap-card:nth-child(3) { animation-delay: 0.19s; }
+.rekap-grid .rekap-card:nth-child(4) { animation-delay: 0.26s; }
+
+/* ===== TABLE ROW — subtle slide-in saat render ===== */
+tbody tr {
+  animation: rowIn 0.2s ease both;
+}
+@keyframes rowIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ===== TABLE WRAP — accent border atas ===== */
+.table-wrap {
+  border-top: 3px solid var(--primary-light);
+}
+
+/* ===== TOAST — info color ===== */
+.toast.info { border-left-color: var(--info); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
