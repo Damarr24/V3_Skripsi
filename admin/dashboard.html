@@ -437,17 +437,17 @@
         <td>${badgeStatus(r.status)}</td>
         <td>
           <div class="dropdown-action">
-            <button class="btn-dots" onclick="toggleActionMenu(event, ${i})">
+            <button class="btn-dots" onclick="toggleActionMenu(event, ${r.rowIndex})">
               <i class="bi bi-three-dots-vertical"></i>
             </button>
-            <div class="action-dropdown-menu" id="actionMenu-${i}">
-              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalStatus(${i}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.status||'Pending'}')">
+            <div class="action-dropdown-menu" id="actionMenu-${r.rowIndex}">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalStatus(${r.rowIndex}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.status||'Pending'}')">
                 <i class="bi bi-arrow-repeat" style="color:var(--primary-light)"></i> Ubah Status
               </div>
-              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalKonfirmasiSurat(${i})">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalKonfirmasiSurat(${r.rowIndex})">
                 <i class="bi bi-file-earmark-text" style="color:var(--success)"></i> Generate Surat
               </div>
-              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalEmail(${i}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.email||''}')">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalEmail(${r.rowIndex}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.email||''}')">
                 <i class="bi bi-envelope" style="color:#0d6efd"></i> Kirim Email
               </div>
               ${r.file ? `<div class="action-dropdown-divider"></div><div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${r.file}', '_blank')"><i class="bi bi-folder2-open" style="color:var(--warning)"></i> Lihat File</div>` : ''}
@@ -550,14 +550,19 @@
     `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
 
     const kampusCount = {};
-    data.forEach(r => { const k = r.nama_lembaga || "Tidak diketahui"; kampusCount[k] = (kampusCount[k] || 0) + 1; });
+    data.forEach(r => {
+      const k = r.nama_lembaga || r.lembaga || r.kampus || "";
+      if (k.trim()) {
+        kampusCount[k.trim()] = (kampusCount[k.trim()] || 0) + 1;
+      }
+    });
     const topKampus = Object.entries(kampusCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
     document.getElementById("rekapKampus").innerHTML = topKampus.length ? topKampus.map(([k, v]) => `
       <div class="rekap-item">
         <span class="rekap-item-label" style="font-size:12px">${k}</span>
         <span class="rekap-item-value">${v}</span>
       </div>
-    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data — pastikan kolom <strong>nama_lembaga</strong> sudah ada di spreadsheet</p>";
 
     const bulanCount = {};
     const bulanIndo = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
@@ -587,8 +592,8 @@
   }
 
   // ===== MODAL STATUS =====
-  function openModalStatus(idx, nama, status) {
-    currentRowIndex = idx;
+  function openModalStatus(rowIdx, nama, status) {
+    currentRowIndex = rowIdx;
     document.getElementById("modalNama").textContent = nama;
     document.getElementById("modalStatusSelect").value = status || "Pending";
     document.getElementById("modalStatus").classList.add("show");
@@ -596,7 +601,7 @@
 
   async function saveStatus() {
     const status = document.getElementById("modalStatusSelect").value;
-    const row = filteredData[currentRowIndex];
+    const row = filteredData.find(r => r.rowIndex == currentRowIndex);
     if (!row) return;
 
     const btn = document.querySelector("#modalStatus .btn-modal-primary");
@@ -621,8 +626,8 @@
   }
 
   // ===== MODAL EMAIL =====
-  function openModalEmail(idx, nama, email) {
-    currentRowIndex = idx;
+  function openModalEmail(rowIdx, nama, email) {
+    currentRowIndex = rowIdx;
     document.getElementById("modalEmailTo").textContent = `${nama} (${email})`;
     document.getElementById("modalEmailSubject").value = "selesai";
     document.getElementById("modalEmailBody").value = "";
@@ -654,13 +659,27 @@
   }
 
   async function sendEmail() {
-    const row = filteredData[currentRowIndex];
+    const row = filteredData.find(r => r.rowIndex == currentRowIndex);
     if (!row) return;
 
     const subject = document.getElementById("modalEmailSubject").value;
     const body    = document.getElementById("modalEmailBody").value;
     const fileInput = document.getElementById("modalEmailFile");
     const file    = fileInput.files[0];
+
+    // Bug 1 fix: wajib ada file kalau subjek "Surat Rekomendasi Siap"
+    if (subject === "selesai" && !file) {
+      const wrap = document.getElementById("fileUploadWrap");
+      wrap.style.border = "2px solid #dc3545";
+      document.getElementById("fileSelectedName").textContent = "⚠️ File surat wajib dilampirkan!";
+      document.getElementById("fileSelectedName").style.display = "block";
+      document.getElementById("fileSelectedName").style.color = "#dc3545";
+      setTimeout(() => {
+        wrap.style.border = "";
+        document.getElementById("fileSelectedName").style.display = "none";
+      }, 3000);
+      return;
+    }
 
     const btn = document.getElementById("btnKirimEmail");
     btn.innerHTML = '<i class="bi bi-send-fill"></i> Mengirim...';
@@ -719,15 +738,15 @@
   document.addEventListener("click", closeAllMenus);
 
   // ===== MODAL KONFIRMASI SURAT =====
-  function openModalKonfirmasiSurat(idx) {
-    currentRowIndex = idx;
-    const row = filteredData[idx];
+  function openModalKonfirmasiSurat(rowIdx) {
+    currentRowIndex = rowIdx;
+    const row = filteredData.find(r => r.rowIndex == rowIdx);
     document.getElementById("konfirmasiNama").textContent = row ? (row.nama || "—") : "—";
     document.getElementById("modalKonfirmasiSurat").classList.add("show");
   }
 
   async function doGenerateSurat() {
-    const row = filteredData[currentRowIndex];
+    const row = filteredData.find(r => r.rowIndex == currentRowIndex);
     if (!row) return;
 
     const btn = document.getElementById("btnKonfirmasiSurat");
@@ -743,10 +762,11 @@
 
       if (data.link) {
         // Simpan link surat ke data lokal supaya muncul di dropdown
-        filteredData[currentRowIndex].link_surat = data.link;
-        const origIdx = allData.findIndex(r => r.rowIndex === row.rowIndex);
-        if (origIdx !== -1) allData[origIdx].link_surat = data.link;
-        renderTable(filteredData);
+        const rowInFiltered = filteredData.find(r => r.rowIndex == currentRowIndex);
+        if (rowInFiltered) rowInFiltered.link_surat = data.link;
+        const rowInAll = allData.find(r => r.rowIndex == currentRowIndex);
+        if (rowInAll) rowInAll.link_surat = data.link;
+        applySortAndRender();
 
         // Tampilkan modal surat siap
         document.getElementById("suratSiapNama").textContent = row.nama || "—";
@@ -767,7 +787,7 @@
   }
 
   function openModalEmailDariSurat() {
-    const row = filteredData[currentRowIndex];
+    const row = filteredData.find(r => r.rowIndex == currentRowIndex);
     if (!row) return;
     openModalEmail(currentRowIndex, row.nama || "—", row.email || "");
     // Set subjek otomatis ke "Surat Rekomendasi Siap"
