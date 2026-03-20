@@ -217,9 +217,10 @@ function kirimEmailKonfirmasi(e, refNum) {
               <table width="100%" cellpadding="0" cellspacing="0" style="background:#fffbea;border:1px solid #f0d070;border-radius:10px;margin-bottom:24px;">
                 <tr><td style="padding:16px 18px;">
                   <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#7c5e00;line-height:1.8;">
-                    <strong>ⓘ<br>
-                    Surat rekomendasi akan dikirimkan ke email ini setelah selesai diverifikasi dan ditandatangani oleh pejabat berwenang. 
+                    <strong>ⓘ</strong><br>
+                    Surat rekomendasi akan dikirimkan ke email ini setelah selesai diverifikasi dan ditandatangani oleh pejabat berwenang.
                     Harap pastikan email ini tetap aktif dan periksa folder <em>Spam</em> jika tidak menerima balasan dalam beberapa hari kerja.
+                    Gunakan nomor referensi <strong>${refNum}</strong> untuk mengecek status pengajuan Anda.
                   </p>
                 </td></tr>
               </table>
