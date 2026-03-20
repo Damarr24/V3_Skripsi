@@ -1283,6 +1283,62 @@ footer {
   opacity: 0.9;
 }
 
+/* ====== TOMBOL KEMBALI KE MENU UTAMA ====== */
+.btn-row-back {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.btn-back-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1.5px solid #aec6e8;
+  color: #4a7aaa;
+  padding: 9px 22px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+}
+
+.btn-back-menu:hover {
+  background: #eef4fb;
+  border-color: #1a3a5c;
+  color: #1a3a5c;
+}
+
+/* ====== POPUP BACK BUTTON ====== */
+.popup-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1.5px solid #aec6e8;
+  color: #4a7aaa;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.popup-back:hover {
+  background: #eef4fb;
+  border-color: #1a3a5c;
+  color: #1a3a5c;
+}
+
 @media (max-width: 576px) {
   .custom-modal-box {
     padding: 24px 20px;

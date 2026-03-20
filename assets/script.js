@@ -1,4 +1,8 @@
 function showFileNotification() {
+    // Bersihkan spasi berlebih di semua input teks sebelum validasi
+    document.querySelectorAll("#uploadForm input[type='text'], #uploadForm input[type='tel'], #uploadForm input[type='email'], #uploadForm textarea").forEach(el => {
+        el.value = el.value.replace(/\s+/g, " ").trim();
+    });
     const fields = document.querySelectorAll(".required-field");
     let firstError = null;
 
@@ -8,6 +12,21 @@ function showFileNotification() {
 
     fields.forEach(field => {
         const box = field.closest(".input-box");
+
+        // VALIDASI NOMOR HP
+        if (field.id === "nomor_hp") {
+            const cleaned = field.value.replace(/[\s\-]/g, "");
+            if (!/^\d{10,13}$/.test(cleaned)) {
+                box.classList.add("error");
+                const errText = box.querySelector(".error-text");
+                if (errText) errText.textContent = "Nomor HP harus berupa angka, 10–13 digit";
+                if (!firstError) firstError = field;
+                return;
+            } else {
+                box.classList.remove("error");
+                return;
+            }
+        }
 
         // VALIDASI KHUSUS RT & RW (3 digit)
         if (field.id === "rukun_tetangga_rt" || field.id === "rukun_warga_rw") {
@@ -96,7 +115,17 @@ function showFileNotification() {
 document.addEventListener("input", function (e) {
     if (e.target.classList.contains("required-field")) {
         const box = e.target.closest(".input-box");
-        if (e.target.value.trim()) {
+        const val = e.target.value.trim();
+
+        // HP — hapus error hanya kalau format sudah valid
+        if (e.target.id === "nomor_hp") {
+            const cleaned = e.target.value.replace(/[\s\-]/g, "");
+            if (/^\d{10,13}$/.test(cleaned)) {
+                box.classList.remove("error");
+                const errText = box.querySelector(".error-text");
+                if (errText) errText.textContent = "Wajib diisi";
+            }
+        } else if (val) {
             box.classList.remove("error");
         }
     }
@@ -238,6 +267,12 @@ function updateOPDHidden() {
 }
 
 
+function formatDatePreview(str) {
+    if (!str) return "—";
+    const d = new Date(str + "T00:00:00"); // hindari timezone shift
+    return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+}
+
 function fillPreview() {
     document.getElementById("pvNama").textContent =
         document.getElementById("nama").value;
@@ -246,9 +281,9 @@ function fillPreview() {
         document.getElementById("proposal").value;
 
     document.getElementById("pvTanggal").textContent =
-        document.getElementById("tanggal_mulai").value +
+        formatDatePreview(document.getElementById("tanggal_mulai").value) +
         " s/d " +
-        document.getElementById("tanggal_selesai").value;
+        formatDatePreview(document.getElementById("tanggal_selesai").value);
 
     const fileInput = document.getElementById("attach");
     document.getElementById("pvFile").textContent =
@@ -279,10 +314,19 @@ function UploadFile() {
         return;
     }
 
-    btnText.textContent = "MENGIRIM...";
-    submitBtn.style.backgroundColor = "#f39c12";
-    loadingSpinner.classList.remove("d-none");
+    const MAX_SIZE_MB = 20;
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        showCustomAlert(
+            `Ukuran file terlalu besar (<strong>${(file.size / 1024 / 1024).toFixed(1)} MB</strong>). Batas maksimal <strong>${MAX_SIZE_MB} MB</strong> untuk menghindari timeout server.<br><br>Coba kompres ulang atau hapus file yang tidak perlu dari arsip.`,
+            "File Terlalu Besar", "⚠️"
+        );
+        return;
+    }
+
+    const btnOriginalHTML = submitBtn.innerHTML;
+    submitBtn.innerHTML = `<span class="btn-spinner-el"></span><span>MENGIRIM...</span><span class="btn-dots-el"><span></span><span></span><span></span></span>`;
     submitBtn.disabled = true;
+    submitBtn.classList.add("loading");
 
     let loadingModal = new bootstrap.Modal(document.getElementById("loadingModal"));
     loadingModal.show();
@@ -332,34 +376,57 @@ function UploadFile() {
     }, 5000);
 
     let reader = new FileReader();
+    reader.onerror = function () {
+        clearInterval(progressInterval);
+        clearInterval(tipsInterval);
+        submitBtn.innerHTML = btnOriginalHTML;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("loading");
+        loadingModal.hide();
+        showCustomAlert("Gagal membaca file. Pastikan file tidak rusak dan coba lagi.", "Gagal Membaca File", "❌");
+    };
     reader.onload = function () {
         document.getElementById("fileContent").value = reader.result;
         document.getElementById("filename").value = file.name;
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // timeout 60 detik
+
         fetch(document.getElementById("uploadForm").action, {
             method: "POST",
-            body: new FormData(document.getElementById("uploadForm"))
+            body: new FormData(document.getElementById("uploadForm")),
+            signal: controller.signal
         })
-        .then(res => res.json())
+        .then(res => {
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            return res.json();
+        })
         .then(() => {
             if (progressFill) progressFill.style.width = "100%";
             if (progressLabel) progressLabel.textContent = "Data berhasil dikirim! ✅";
-            matikanAntiRefresh(); // matikan warning refresh
+            matikanAntiRefresh();
             setTimeout(() => {
                 document.getElementById("uploadForm").reset();
-                document.getElementById("notification").classList.remove("d-none");
+                const notif = document.getElementById("notification");
+                notif.classList.remove("d-none");
+                notif.scrollIntoView({ behavior: "smooth", block: "center" });
             }, 600);
         })
-        .catch(() => {
-            showCustomAlert("Gagal mengirim data. Periksa koneksi internet kamu dan coba lagi.", "Gagal Mengirim", "❌");
+        .catch((err) => {
+            clearTimeout(timeoutId);
+            if (err.name === 'AbortError') {
+                showCustomAlert("Koneksi timeout — proses memakan waktu terlalu lama. Coba lagi atau gunakan file yang lebih kecil (maks 20 MB).", "Timeout", "⏱️");
+            } else {
+                showCustomAlert("Gagal mengirim data. Periksa koneksi internet kamu dan coba lagi.", "Gagal Mengirim", "❌");
+            }
         })
         .finally(() => {
             clearInterval(progressInterval);
             clearInterval(tipsInterval);
-            btnText.textContent = "KIRIM DATA";
-            submitBtn.style.backgroundColor = "#2c3e50";
-            loadingSpinner.classList.add("d-none");
+            submitBtn.innerHTML = btnOriginalHTML;
             submitBtn.disabled = false;
+            submitBtn.classList.remove("loading");
             loadingModal.hide();
         });
     };
@@ -367,10 +434,47 @@ function UploadFile() {
     reader.readAsDataURL(file);
 }
 
-// Tampilkan popup saat halaman dibuka + auto tambah 1 OPD
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('popupModal').style.display = 'flex';
-    tambahOPD(); // auto tambah 1 field OPD
+// ===== INIT (gabungan semua DOMContentLoaded) =====
+document.addEventListener("DOMContentLoaded", function () {
+    // Tampilkan popup intro + auto tambah 1 OPD
+    document.getElementById("popupModal").style.display = "flex";
+    tambahOPD();
+
+    // Batasi tanggal surat + atur min/max tanggal penelitian
+    const today = new Date().toISOString().split("T")[0];
+    const start = document.getElementById("tanggal_mulai");
+    const end   = document.getElementById("tanggal_selesai");
+    const surat = document.getElementById("tgl_surat");
+
+    surat.max = today;
+
+    start.addEventListener("change", () => {
+        const startDate = new Date(start.value);
+        const maxEnd = new Date(startDate);
+        maxEnd.setMonth(maxEnd.getMonth() + 6);
+        end.min = start.value;
+        end.max = maxEnd.toISOString().split("T")[0];
+        end.value = "";
+    });
+
+    end.addEventListener("change", () => {
+        const limit = new Date(start.value);
+        limit.setMonth(limit.getMonth() + 6);
+        if (new Date(end.value) > limit) {
+            showCustomAlert("Durasi penelitian maksimal <strong>6 bulan</strong> dari tanggal mulai.", "Tanggal Tidak Valid", "📅");
+            end.value = "";
+        }
+    });
+
+    // Tutup custom modal saat klik di luar box
+    ["customAlert", "customConfirmReset", "customConfirmKembali"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("click", function (e) {
+                if (e.target === this) this.style.display = "none";
+            });
+        }
+    });
 });
 
 function closePopup() {
@@ -382,37 +486,6 @@ function onlyThreeDigits(el) {
         el.value = el.value.slice(0, 3);
     }
 }
-document.addEventListener("DOMContentLoaded", function () {
-    const today = new Date().toISOString().split("T")[0];
-
-    const start = document.getElementById("tanggal_mulai");
-    const end = document.getElementById("tanggal_selesai");
-    const surat = document.getElementById("tgl_surat");
-
-    // tanggal_mulai TIDAK dikunci ke hari ini — bebas pilih
-    surat.max = today;
-
-    start.addEventListener("change", () => {
-        const startDate = new Date(start.value);
-        const maxEnd = new Date(startDate);
-        maxEnd.setMonth(maxEnd.getMonth() + 6);
-
-        end.min = start.value;
-        end.max = maxEnd.toISOString().split("T")[0];
-        end.value = "";
-    });
-
-    end.addEventListener("change", () => {
-        const limit = new Date(start.value);
-        limit.setMonth(limit.getMonth() + 6);
-
-        if (new Date(end.value) > limit) {
-            showCustomAlert("Durasi penelitian maksimal <strong>6 bulan</strong> dari tanggal mulai.", "Tanggal Tidak Valid", "📅");
-            end.value = "";
-        }
-    });
-});
-
 // ===== CUSTOM MODAL FUNCTIONS =====
 function showCustomAlert(msg, title = "Perhatian", icon = "⚠️") {
   document.getElementById("customAlertMsg").innerHTML = msg;
@@ -433,9 +506,20 @@ function closeCustomConfirmReset() {
   document.getElementById("customConfirmReset").style.display = "none";
 }
 
+function konfirmasiKembali() {
+  document.getElementById("customConfirmKembali").style.display = "flex";
+}
+
+function closeCustomConfirmKembali() {
+  document.getElementById("customConfirmKembali").style.display = "none";
+}
+
 function doReset() {
   closeCustomConfirmReset();
   document.getElementById("uploadForm").reset();
+
+  // Sembunyikan notifikasi sukses kalau masih tampil
+  document.getElementById("notification").classList.add("d-none");
 
   // Reset OPD list — hapus semua, tambah 1 field kosong
   document.getElementById("opd-list").innerHTML = "";
@@ -457,31 +541,6 @@ function doReset() {
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
-
-function konfirmasiKembali() {
-  document.getElementById("customConfirmBack").style.display = "flex";
-}
-
-function closeCustomConfirmBack() {
-  document.getElementById("customConfirmBack").style.display = "none";
-}
-
-function doKembali() {
-  formDiisi = false;
-  window.location.href = "index.html";
-}
-
-// Tutup modal kalau klik di luar box
-document.addEventListener("DOMContentLoaded", function () {
-  ["customAlert", "customConfirmReset", "customConfirmBack"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("click", function (e) {
-        if (e.target === this) this.style.display = "none";
-      });
-    }
-  });
-});
 
 let formDiisi = false;
 

@@ -58,6 +58,12 @@
   <div class="topbar">
     <div class="topbar-title" id="pageTitle">Dashboard</div>
     <div class="topbar-right">
+      <span id="lastUpdatedLabel" style="font-size:12px;color:var(--muted);margin-right:8px;display:none;">
+        <i class="bi bi-clock" style="margin-right:3px;"></i><span id="lastUpdatedText"></span>
+      </span>
+      <button class="btn-dark-toggle" id="btnDark" onclick="toggleDark()" title="Toggle Dark Mode">
+        <i class="bi bi-moon-fill" id="darkIcon"></i>
+      </button>
       <button class="btn-refresh" onclick="loadData()">
         <i class="bi bi-arrow-clockwise"></i>
         Refresh
@@ -69,33 +75,33 @@
 
     <!-- ===== PAGE: DASHBOARD ===== -->
     <div class="page active" id="page-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card skeleton-card" id="cardTotal">
+          <div class="stat-icon blue skeleton-icon-wrap"><i class="bi bi-people-fill"></i></div>
           <div>
-            <div class="stat-value" id="statTotal">—</div>
-            <div class="stat-label">Total Pendaftar</div>
+            <div class="stat-value" id="statTotal"><div class="skeleton-line" style="width:48px;height:26px;border-radius:6px;"></div></div>
+            <div class="stat-label" id="labelTotal"><div class="skeleton-line" style="width:90px;height:11px;border-radius:4px;margin-top:6px;"></div></div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon yellow"><i class="bi bi-hourglass-split"></i></div>
+        <div class="stat-card skeleton-card" id="cardPending">
+          <div class="stat-icon yellow skeleton-icon-wrap"><i class="bi bi-hourglass-split"></i></div>
           <div>
-            <div class="stat-value" id="statPending">—</div>
-            <div class="stat-label">Menunggu Proses</div>
+            <div class="stat-value" id="statPending"><div class="skeleton-line" style="width:48px;height:26px;border-radius:6px;"></div></div>
+            <div class="stat-label" id="labelPending"><div class="skeleton-line" style="width:90px;height:11px;border-radius:4px;margin-top:6px;"></div></div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon blue"><i class="bi bi-arrow-repeat"></i></div>
+        <div class="stat-card skeleton-card" id="cardProses">
+          <div class="stat-icon blue skeleton-icon-wrap"><i class="bi bi-arrow-repeat"></i></div>
           <div>
-            <div class="stat-value" id="statProses">—</div>
-            <div class="stat-label">Sedang Diproses</div>
+            <div class="stat-value" id="statProses"><div class="skeleton-line" style="width:48px;height:26px;border-radius:6px;"></div></div>
+            <div class="stat-label" id="labelProses"><div class="skeleton-line" style="width:90px;height:11px;border-radius:4px;margin-top:6px;"></div></div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-card skeleton-card" id="cardSelesai">
+          <div class="stat-icon green skeleton-icon-wrap"><i class="bi bi-check-circle-fill"></i></div>
           <div>
-            <div class="stat-value" id="statSelesai">—</div>
-            <div class="stat-label">Selesai</div>
+            <div class="stat-value" id="statSelesai"><div class="skeleton-line" style="width:48px;height:26px;border-radius:6px;"></div></div>
+            <div class="stat-label" id="labelSelesai"><div class="skeleton-line" style="width:90px;height:11px;border-radius:4px;margin-top:6px;"></div></div>
           </div>
         </div>
       </div>
@@ -116,7 +122,11 @@
               </tr>
             </thead>
             <tbody id="tbodyDashboard">
-              <tr><td colspan="5"><div class="loading-state"><div class="spinner"></div>Memuat data...</div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:110px"></div></td><td><div class="skeleton-line" style="width:180px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:130px"></div></td><td><div class="skeleton-line" style="width:200px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:100px"></div></td><td><div class="skeleton-line" style="width:160px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:120px"></div></td><td><div class="skeleton-line" style="width:190px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:115px"></div></td><td><div class="skeleton-line" style="width:170px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -143,6 +153,9 @@
         <button class="btn-filter-reset" onclick="resetFilter()">
           <i class="bi bi-x-circle"></i> Reset
         </button>
+        <button class="btn-export" onclick="exportExcel()" title="Export data yang sedang ditampilkan ke Excel">
+          <i class="bi bi-file-earmark-excel-fill"></i> Export Excel
+        </button>
       </div>
 
       <div class="table-wrap">
@@ -153,7 +166,7 @@
               <i class="bi bi-arrow-down-up"></i>
               <span id="sortLabel">Lama → Baru</span>
             </button>
-            <input type="text" class="search-input" id="searchInput" placeholder="Cari nama / judul..." oninput="searchData()">
+            <input type="text" class="search-input" id="searchInput" placeholder="Cari nama / judul / OPD / kampus..." oninput="searchData()">
           </div>
         </div>
         <div class="table-scroll">
@@ -171,10 +184,16 @@
               </tr>
             </thead>
             <tbody id="tbodyData">
-              <tr><td colspan="8"><div class="loading-state"><div class="spinner"></div>Memuat data...</div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:110px"></div></td><td><div class="skeleton-line" style="width:170px"></div></td><td><div class="skeleton-line" style="width:130px"></div></td><td><div class="skeleton-line" style="width:140px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td><td><div class="skeleton-line" style="width:28px;border-radius:6px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:120px"></div></td><td><div class="skeleton-line" style="width:190px"></div></td><td><div class="skeleton-line" style="width:110px"></div></td><td><div class="skeleton-line" style="width:150px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td><td><div class="skeleton-line" style="width:28px;border-radius:6px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:100px"></div></td><td><div class="skeleton-line" style="width:160px"></div></td><td><div class="skeleton-line" style="width:150px"></div></td><td><div class="skeleton-line" style="width:140px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td><td><div class="skeleton-line" style="width:28px;border-radius:6px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:130px"></div></td><td><div class="skeleton-line" style="width:175px"></div></td><td><div class="skeleton-line" style="width:120px"></div></td><td><div class="skeleton-line" style="width:145px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td><td><div class="skeleton-line" style="width:28px;border-radius:6px"></div></td></tr>
+              <tr class="skeleton-row"><td><div class="skeleton-line" style="width:16px"></div></td><td><div class="skeleton-line" style="width:80px"></div></td><td><div class="skeleton-line" style="width:115px"></div></td><td><div class="skeleton-line" style="width:185px"></div></td><td><div class="skeleton-line" style="width:135px"></div></td><td><div class="skeleton-line" style="width:150px"></div></td><td><div class="skeleton-line" style="width:72px;border-radius:20px"></div></td><td><div class="skeleton-line" style="width:28px;border-radius:6px"></div></td></tr>
             </tbody>
           </table>
         </div>
+        <!-- PAGINATION -->
+        <div class="pagination-wrap" id="paginationWrap"></div>
       </div>
     </div>
 
@@ -196,19 +215,25 @@
       <div class="rekap-grid" id="rekapGrid">
         <div class="rekap-card">
           <h4><i class="bi bi-pie-chart-fill"></i> Status Pendaftaran</h4>
-          <div id="rekapStatus"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>Klik "Tampilkan Rekap" untuk melihat data</span></div></div>
+          <div id="rekapStatus" class="chart-wrap"><div class="rekap-empty"><i class="bi bi-pie-chart"></i><span>Klik "Tampilkan Rekap" untuk melihat data</span></div></div>
+        </div>
+        <div class="rekap-card">
+          <h4><i class="bi bi-clipboard-data-fill"></i> Ringkasan</h4>
+          <div id="rekapRingkasan" class="ringkasan-wrap">
+            <div class="rekap-empty"><i class="bi bi-clipboard-data"></i><span>—</span></div>
+          </div>
+        </div>
+        <div class="rekap-card rekap-card-wide">
+          <h4><i class="bi bi-bar-chart-line-fill"></i> Pendaftar per Bulan</h4>
+          <div id="rekapBulan" class="chart-wrap"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
         </div>
         <div class="rekap-card">
           <h4><i class="bi bi-building"></i> OPD Terbanyak</h4>
-          <div id="rekapOPD"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
+          <div id="rekapOPD" class="chart-wrap"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
         </div>
         <div class="rekap-card">
           <h4><i class="bi bi-mortarboard-fill"></i> Asal Kampus</h4>
-          <div id="rekapKampus"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
-        </div>
-        <div class="rekap-card">
-          <h4><i class="bi bi-calendar-month"></i> Pendaftar per Bulan</h4>
-          <div id="rekapBulan"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
+          <div id="rekapKampus" class="chart-wrap"><div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div></div>
         </div>
       </div>
     </div>
@@ -252,13 +277,13 @@
       <label>Subjek</label>
       <select id="modalEmailSubject" onchange="toggleFileUpload()">
         <option value="selesai">✅ Surat Rekomendasi Siap</option>
-        <option value="info">Informasi Tambahan Diperlukan</option>
-        <option value="ditolak">Pendaftaran Tidak Dapat Diproses</option>
-        <option value="custom">Pesan Kustom</option>
+        <option value="info">⚠️ Informasi Tambahan Diperlukan</option>
+        <option value="ditolak">❌ Pendaftaran Tidak Dapat Diproses</option>
+        <option value="custom">📨 Pesan Kustom</option>
       </select>
     </div>
     <div class="modal-form-group" id="fileUploadGroup">
-      <label>Lampiran Surat <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label>
+      <label>Lampiran Surat <span style="color:var(--muted);font-weight:400;text-transform:none"></span></label>
       <div class="file-upload-wrap" id="fileUploadWrap">
         <i class="bi bi-paperclip"></i>
         <span id="fileUploadLabel">Klik untuk pilih file surat (PDF/DOC)</span>
@@ -273,6 +298,17 @@
     <div class="modal-actions">
       <button class="btn-modal-cancel" onclick="closeModal('modalEmail')">Batal</button>
       <button class="btn-modal-primary" id="btnKirimEmail" onclick="sendEmail()"><i class="bi bi-send-fill"></i> Kirim Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DETAIL PEMOHON ===== -->
+<div class="modal-overlay" id="modalDetail">
+  <div class="modal-box" style="max-width:580px;max-height:85vh;overflow-y:auto;">
+    <div class="modal-title"><i class="bi bi-person-lines-fill"></i> Detail Pemohon</div>
+    <div id="modalDetailContent" style="display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-top:4px;"></div>
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn-modal-cancel" onclick="closeModal('modalDetail')">Tutup</button>
     </div>
   </div>
 </div>
@@ -329,7 +365,12 @@
 <script>
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyZ5WJGmg1qkPgjuiHGJrGzAIFNQWumpw92FBoun7S60oTYriJQ_6yxgcDFBBOqYdQ/exec";
 
-  // ===== ESCAPE HTML — cegah XSS dari input pemohon =====
+  // Sanitasi URL — hanya izinkan https:// dan http:// untuk cegah javascript: injection
+  function safeUrl(url) {
+    if (!url) return null;
+    const s = String(url).trim();
+    return /^https?:\/\//i.test(s) ? s : null;
+  }
   function escHtml(s) {
     if (!s) return "—";
     return String(s)
@@ -342,6 +383,7 @@
 
   let allData = [];
   let filteredData = [];
+  window.filteredData = filteredData; // expose untuk exportExcel()
   let currentRow = null;
   let currentRowIndex = null;
   let sortAsc = true;
@@ -374,16 +416,84 @@
     document.getElementById("pageTitle").textContent = titles[page];
   }
 
+  // ===== LOADING BUTTON HELPER =====
+  function setLoading(btn, loading, labelText) {
+    if (loading) {
+      btn.disabled = true;
+      btn.classList.add("loading");
+      btn.style.display = "inline-flex";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.gap = "8px";
+      btn.innerHTML = `<span class="btn-spinner-el"></span><span>${labelText}</span><span class="btn-dots-el"><span></span><span></span><span></span></span>`;
+    } else {
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.style.gap = "";
+    }
+  }
+  function showSkeletonStats() {
+    ["cardTotal","cardPending","cardProses","cardSelesai"].forEach(id => {
+      const card = document.getElementById(id);
+      if (card) card.classList.add("skeleton-card");
+    });
+    const skeletonVal = `<div class="skeleton-line" style="width:48px;height:26px;border-radius:6px;"></div>`;
+    const skeletonLbl = `<div class="skeleton-line" style="width:90px;height:11px;border-radius:4px;margin-top:6px;"></div>`;
+    ["statTotal","statPending","statProses","statSelesai"].forEach(id => {
+      document.getElementById(id).innerHTML = skeletonVal;
+    });
+    ["labelTotal","labelPending","labelProses","labelSelesai"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = skeletonLbl;
+    });
+  }
+
+  function showSkeletonTable(tbodyId, cols) {
+    const widths = {
+      5: ["16px","110px","180px","80px","72px"],
+      8: ["16px","80px","120px","175px","130px","145px","72px","28px"]
+    }[cols] || [];
+    const radii = { [cols-1]: "20px", [cols]: "6px" };
+    document.getElementById(tbodyId).innerHTML = Array(5).fill(0).map(() =>
+      `<tr class="skeleton-row">${widths.map((w,i) =>
+        `<td><div class="skeleton-line" style="width:${w};${radii[i] ? `border-radius:${radii[i]};` : ''}"></div></td>`
+      ).join("")}</tr>`
+    ).join("");
+  }
+
+  function countUp(el, target, duration = 600) {
+    const start = 0;
+    const step = target / (duration / 16);
+    let current = start;
+    const tick = () => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current);
+      if (current < target) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   // ===== LOAD DATA =====
   async function loadData() {
     showToast("Memuat data...", "info");
+    showSkeletonStats();
+    showSkeletonTable("tbodyDashboard", 5);
+    showSkeletonTable("tbodyData", 8);
     try {
       const res = await fetch(`${APPS_SCRIPT_URL}?action=getData`);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const json = await res.json();
       allData = json.data || [];
       filteredData = [...allData];
+      window.filteredData = filteredData;
       renderDashboard();
       renderTable(filteredData);
+      // Update timestamp "terakhir diperbarui"
+      const now = new Date();
+      const waktu = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+      const tgl   = now.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+      document.getElementById("lastUpdatedText").textContent = `Diperbarui ${tgl}, ${waktu}`;
+      document.getElementById("lastUpdatedLabel").style.display = "inline-flex";
       showToast("Data berhasil dimuat!", "success");
     } catch (err) {
       showToast("Gagal memuat data!", "error");
@@ -394,15 +504,37 @@
 
   // ===== RENDER DASHBOARD =====
   function renderDashboard() {
-    const total = allData.length;
+    const total   = allData.length;
     const pending = allData.filter(r => !r.status || r.status === "Pending").length;
-    const proses = allData.filter(r => r.status === "Diproses").length;
+    const proses  = allData.filter(r => r.status === "Diproses").length;
     const selesai = allData.filter(r => r.status === "Selesai").length;
 
-    document.getElementById("statTotal").textContent = total;
-    document.getElementById("statPending").textContent = pending;
-    document.getElementById("statProses").textContent = proses;
-    document.getElementById("statSelesai").textContent = selesai;
+    // Lepas skeleton dari stat cards + trigger reveal animation
+    ["cardTotal","cardPending","cardProses","cardSelesai"].forEach(id => {
+      const card = document.getElementById(id);
+      if (!card) return;
+      card.classList.remove("skeleton-card", "revealed");
+      // Force reflow supaya animation ulang dari awal
+      void card.offsetWidth;
+      card.classList.add("revealed");
+    });
+
+    // Isi label dulu
+    const labels = {
+      labelTotal: "Total Pendaftar", labelPending: "Menunggu Proses",
+      labelProses: "Sedang Diproses", labelSelesai: "Selesai"
+    };
+    Object.entries(labels).forEach(([id, txt]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    });
+
+    // Count-up animation untuk angka
+    const ids = { statTotal: total, statPending: pending, statProses: proses, statSelesai: selesai };
+    Object.entries(ids).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = "0"; countUp(el, val); }
+    });
 
     // Update badge di sidebar
     const badge = document.getElementById("navBadgePending");
@@ -430,16 +562,27 @@
     `).join("");
   }
 
-  // ===== RENDER TABLE =====
-  function renderTable(data) {
+  // ===== RENDER TABLE with PAGINATION =====
+  let currentPage = 1;
+  const PAGE_SIZE = 15;
+
+  function renderTable(data, page) {
+    window._lastTableData = data;
+    currentPage = page || 1;
     const tbody = document.getElementById("tbodyData");
     if (!data.length) {
       tbody.innerHTML = `<tr><td colspan="8"><div class="table-empty"><i class="bi bi-inbox"></i>Tidak ada data ditemukan</div></td></tr>`;
+      document.getElementById("paginationWrap").innerHTML = "";
       return;
     }
-    tbody.innerHTML = data.map((r, i) => `
+    const totalPages = Math.ceil(data.length / PAGE_SIZE);
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageData = data.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = pageData.map((r, i) => `
       <tr>
-        <td>${i + 1}</td>
+        <td>${start + i + 1}</td>
         <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${formatDate(r.timestamp)}</td>
         <td class="td-nama">${escHtml(r.nama)}</td>
         <td class="td-judul"><span>${escHtml(r.proposal)}</span></td>
@@ -452,22 +595,54 @@
               <i class="bi bi-three-dots-vertical"></i>
             </button>
             <div class="action-dropdown-menu" id="actionMenu-${r.rowIndex}">
-              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalStatus(${r.rowIndex}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.status||'Pending'}')">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalDetail(${r.rowIndex})">
+                <i class="bi bi-person-lines-fill" style="color:var(--primary-light)"></i> Lihat Detail
+              </div>
+              <div class="action-dropdown-divider"></div>
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalStatus(${r.rowIndex}, '${(r.nama||"").replace(/'/g,"\'")}', '${r.status||"Pending"}')">
                 <i class="bi bi-arrow-repeat" style="color:var(--primary-light)"></i> Ubah Status
               </div>
               <div class="action-dropdown-item" onclick="closeAllMenus(); openModalKonfirmasiSurat(${r.rowIndex})">
                 <i class="bi bi-file-earmark-text" style="color:var(--success)"></i> Generate Surat
               </div>
-              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalEmail(${r.rowIndex}, '${(r.nama||'').replace(/'/g,"\\'")}', '${r.email||''}')">
+              <div class="action-dropdown-item" onclick="closeAllMenus(); openModalEmail(${r.rowIndex}, '${(r.nama||"").replace(/'/g,"\'")}', '${r.email||""}')">
                 <i class="bi bi-envelope" style="color:#0d6efd"></i> Kirim Email
               </div>
-              ${r.file ? `<div class="action-dropdown-divider"></div><div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${r.file}', '_blank')"><i class="bi bi-folder2-open" style="color:var(--warning)"></i> Lihat File</div>` : ''}
-              ${r.link_surat ? `<div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${r.link_surat}', '_blank')"><i class="bi bi-eye" style="color:var(--accent)"></i> Lihat Surat</div>` : ''}
+              ${safeUrl(r.file) ? `<div class="action-dropdown-divider"></div><div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${safeUrl(r.file)}', '_blank')"><i class="bi bi-folder2-open" style="color:var(--warning)"></i> Lihat File</div>` : ""}
+              ${safeUrl(r.link_surat) ? `<div class="action-dropdown-item" onclick="closeAllMenus(); window.open('${safeUrl(r.link_surat)}', '_blank')"><i class="bi bi-eye" style="color:var(--accent)"></i> Lihat Surat</div>` : ""}
             </div>
           </div>
         </td>
       </tr>
     `).join("");
+
+    renderPagination(data, currentPage, totalPages);
+  }
+
+  function renderPagination(data, page, totalPages) {
+    const wrap = document.getElementById("paginationWrap");
+    if (totalPages <= 1) { wrap.innerHTML = ""; return; }
+    const start = (page-1)*PAGE_SIZE+1;
+    const end   = Math.min(page*PAGE_SIZE, data.length);
+    let btns = "";
+    btns += `<button class="pg-btn" onclick="goPage(${page-1})" ${page===1?"disabled":""}>&#8249;</button>`;
+    for (let p = 1; p <= totalPages; p++) {
+      if (totalPages > 7 && p > 2 && p < totalPages-1 && Math.abs(p-page) > 1) {
+        if (p === 3 || p === totalPages-2) btns += `<span class="pg-dots">…</span>`;
+        continue;
+      }
+      btns += `<button class="pg-btn ${p===page?"active":""}" onclick="goPage(${p})">${p}</button>`;
+    }
+    btns += `<button class="pg-btn" onclick="goPage(${page+1})" ${page===totalPages?"disabled":""}>&#8250;</button>`;
+    wrap.innerHTML = `<span class="pg-info">${start}–${end} dari ${data.length} data</span>${btns}`;
+  }
+
+  function goPage(p) {
+    const data = window._lastTableData || filteredData;
+    const total = Math.ceil(data.length / PAGE_SIZE);
+    if (p < 1 || p > total) return;
+    renderTable(data, p);
+    document.getElementById("page-data").scrollIntoView({behavior:"smooth", block:"start"});
   }
 
   // ===== SORT =====
@@ -501,6 +676,7 @@
       if (status && (r.status || "Pending") !== status) return false;
       return true;
     });
+    window.filteredData = filteredData;
     applySortAndRender();
     showToast(`${filteredData.length} data ditemukan`, "success");
   }
@@ -517,9 +693,11 @@
   function searchData() {
     const q = document.getElementById("searchInput").value.toLowerCase();
     const hasil = filteredData.filter(r =>
-      (r.nama || "").toLowerCase().includes(q) ||
-      (r.proposal || "").toLowerCase().includes(q) ||
-      (r.email || "").toLowerCase().includes(q)
+      (r.nama         || "").toLowerCase().includes(q) ||
+      (r.proposal     || "").toLowerCase().includes(q) ||
+      (r.email        || "").toLowerCase().includes(q) ||
+      (r.lokasi       || "").toLowerCase().includes(q) ||
+      (r.nama_lembaga || r.lembaga || r.kampus || "").toLowerCase().includes(q)
     );
     const sorted = [...hasil].sort((a, b) => {
       const tA = a.timestamp ? new Date(a.timestamp) : new Date(0);
@@ -530,66 +708,160 @@
   }
 
   // ===== REKAP =====
+  // Chart instances tracker
+  const chartInstances = {};
+  function destroyChart(id) { if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
+
   function loadRekap() {
-    const dari = document.getElementById("rekapDari").value;
+    const dari   = document.getElementById("rekapDari").value;
     const sampai = document.getElementById("rekapSampai").value;
+    const isDark = document.body.classList.contains("dark");
+    const textColor = isDark ? "#c8d8f0" : "#1a2b3c";
+    const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
 
     let data = allData.filter(r => {
-      const tgl = r.timestamp ? new Date(r.timestamp) : null;
+      const raw = r.timestamp || "";
+      let tgl = null;
+      const dmyMatch = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (dmyMatch) tgl = new Date(dmyMatch[3], dmyMatch[2]-1, dmyMatch[1]);
+      else if (raw) tgl = new Date(raw);
       if (dari && tgl && tgl < new Date(dari)) return false;
       if (sampai && tgl && tgl > new Date(sampai + "T23:59:59")) return false;
       return true;
     });
 
+    // === PIE: Status ===
+    destroyChart("chartStatus");
     const statusCount = { Pending: 0, Diproses: 0, Selesai: 0, Ditolak: 0 };
     data.forEach(r => { const s = r.status || "Pending"; if (statusCount[s] !== undefined) statusCount[s]++; });
-    document.getElementById("rekapStatus").innerHTML = Object.entries(statusCount).map(([k, v]) => `
-      <div class="rekap-item">
-        <span class="rekap-item-label">${badgeStatus(k)}</span>
-        <span class="rekap-item-value">${v}</span>
-      </div>
-    `).join("");
-
-    const opdCount = {};
-    data.forEach(r => { const o = r.lokasi || "Tidak diketahui"; opdCount[o] = (opdCount[o] || 0) + 1; });
-    const topOPD = Object.entries(opdCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
-    document.getElementById("rekapOPD").innerHTML = topOPD.length ? topOPD.map(([k, v]) => `
-      <div class="rekap-item">
-        <span class="rekap-item-label" style="font-size:12px">${k}</span>
-        <span class="rekap-item-value">${v}</span>
-      </div>
-    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
-
-    const kampusCount = {};
-    data.forEach(r => {
-      const k = r.nama_lembaga || r.lembaga || r.kampus || "";
-      if (k.trim()) {
-        kampusCount[k.trim()] = (kampusCount[k.trim()] || 0) + 1;
-      }
+    const statusWrap = document.getElementById("rekapStatus");
+    statusWrap.innerHTML = `<canvas id="chartStatus" style="max-height:220px"></canvas>`;
+    chartInstances["chartStatus"] = new Chart(document.getElementById("chartStatus"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(statusCount),
+        datasets: [{ data: Object.values(statusCount),
+          backgroundColor: ["#f59e0b","#3b82f6","#10b981","#ef4444"],
+          borderWidth: 2, borderColor: isDark ? "#1e2d3d" : "#fff" }]
+      },
+      options: { plugins: { legend: { position:"bottom", labels:{ color: textColor, font:{size:12}, padding:12 } } }, cutout:"60%" }
     });
-    const topKampus = Object.entries(kampusCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
-    document.getElementById("rekapKampus").innerHTML = topKampus.length ? topKampus.map(([k, v]) => `
-      <div class="rekap-item">
-        <span class="rekap-item-label" style="font-size:12px">${k}</span>
-        <span class="rekap-item-value">${v}</span>
-      </div>
-    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data — pastikan kolom <strong>nama_lembaga</strong> sudah ada di spreadsheet</p>";
 
+    // === RINGKASAN KARTU ===
+    const totalData = data.length;
+    const selesaiPct = totalData ? Math.round((statusCount.Selesai / totalData) * 100) : 0;
+    const ringkasanItems = [
+      { icon: "bi-people-fill",       color: "#1a5cb5", bg: "#e8f0ff", label: "Total Pendaftar",  val: totalData },
+      { icon: "bi-hourglass-split",   color: "#d97706", bg: "#fef3c7", label: "Pending",          val: statusCount.Pending },
+      { icon: "bi-arrow-repeat",      color: "#2563eb", bg: "#dbeafe", label: "Diproses",         val: statusCount.Diproses },
+      { icon: "bi-check-circle-fill", color: "#059669", bg: "#d1fae5", label: "Selesai",          val: statusCount.Selesai },
+      { icon: "bi-x-circle-fill",     color: "#dc2626", bg: "#fee2e2", label: "Ditolak",          val: statusCount.Ditolak },
+      { icon: "bi-graph-up-arrow",    color: "#7c3aed", bg: "#ede9fe", label: "Tingkat Selesai",  val: selesaiPct + "%" },
+    ];
+    document.getElementById("rekapRingkasan").innerHTML = `
+      <div class="ringkasan-grid">
+        ${ringkasanItems.map(item => `
+          <div class="ringkasan-item" style="background:${item.bg}">
+            <div class="ringkasan-icon" style="color:${item.color}"><i class="bi ${item.icon}"></i></div>
+            <div class="ringkasan-val" style="color:${item.color}">${item.val}</div>
+            <div class="ringkasan-label">${item.label}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    // === BAR: Pendaftar per Bulan ===
+    destroyChart("chartBulan");
     const bulanCount = {};
     const bulanIndo = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
     data.forEach(r => {
-      if (r.timestamp) {
-        const d = new Date(r.timestamp);
+      const raw = r.timestamp || "";
+      let d = null;
+      const dmyMatch = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (dmyMatch) d = new Date(dmyMatch[3], dmyMatch[2]-1, dmyMatch[1]);
+      else if (raw) d = new Date(raw);
+      if (d && !isNaN(d)) {
         const key = `${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
         bulanCount[key] = (bulanCount[key] || 0) + 1;
       }
     });
-    document.getElementById("rekapBulan").innerHTML = Object.keys(bulanCount).length ? Object.entries(bulanCount).map(([k, v]) => `
-      <div class="rekap-item">
-        <span class="rekap-item-label">${k}</span>
-        <span class="rekap-item-value">${v} pendaftar</span>
-      </div>
-    `).join("") : "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+    const bulanWrap = document.getElementById("rekapBulan");
+    if (Object.keys(bulanCount).length) {
+      bulanWrap.innerHTML = `<canvas id="chartBulan" style="max-height:200px"></canvas>`;
+      chartInstances["chartBulan"] = new Chart(document.getElementById("chartBulan"), {
+        type: "bar",
+        data: {
+          labels: Object.keys(bulanCount),
+          datasets: [{ label:"Pendaftar", data: Object.values(bulanCount),
+            backgroundColor:"#1a5cb5", borderRadius:6, borderSkipped:false }]
+        },
+        options: {
+          plugins: { legend:{display:false} },
+          scales: {
+            x: { ticks:{color:textColor,font:{size:11}}, grid:{color:gridColor} },
+            y: { ticks:{color:textColor,font:{size:11},stepSize:1}, grid:{color:gridColor}, beginAtZero:true }
+          }
+        }
+      });
+    } else {
+      bulanWrap.innerHTML = "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+    }
+
+    // === BAR HORIZONTAL: OPD ===
+    destroyChart("chartOPD");
+    const opdCount = {};
+    data.forEach(r => { const o = (r.lokasi||"").trim(); if(o) opdCount[o] = (opdCount[o]||0)+1; });
+    const topOPD = Object.entries(opdCount).sort((a,b)=>b[1]-a[1]).slice(0,7);
+    const opdWrap = document.getElementById("rekapOPD");
+    if (topOPD.length) {
+      opdWrap.innerHTML = `<canvas id="chartOPD" style="max-height:220px"></canvas>`;
+      chartInstances["chartOPD"] = new Chart(document.getElementById("chartOPD"), {
+        type: "bar",
+        data: {
+          labels: topOPD.map(([k])=>k.length>20?k.slice(0,18)+"…":k),
+          datasets:[{ label:"Pendaftar", data:topOPD.map(([,v])=>v),
+            backgroundColor:"#c8a951", borderRadius:5, borderSkipped:false }]
+        },
+        options: {
+          indexAxis:"y",
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{ticks:{color:textColor,font:{size:11},stepSize:1},grid:{color:gridColor},beginAtZero:true},
+            y:{ticks:{color:textColor,font:{size:11}},grid:{display:false}}
+          }
+        }
+      });
+    } else {
+      opdWrap.innerHTML = "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data</p>";
+    }
+
+    // === BAR HORIZONTAL: Kampus ===
+    destroyChart("chartKampus");
+    const kampusCount = {};
+    data.forEach(r => { const k=(r.nama_lembaga||r.lembaga||r.kampus||"").trim(); if(k) kampusCount[k]=(kampusCount[k]||0)+1; });
+    const topKampus = Object.entries(kampusCount).sort((a,b)=>b[1]-a[1]).slice(0,7);
+    const kampusWrap = document.getElementById("rekapKampus");
+    if (topKampus.length) {
+      kampusWrap.innerHTML = `<canvas id="chartKampus" style="max-height:220px"></canvas>`;
+      chartInstances["chartKampus"] = new Chart(document.getElementById("chartKampus"), {
+        type:"bar",
+        data:{
+          labels:topKampus.map(([k])=>k.length>22?k.slice(0,20)+"…":k),
+          datasets:[{label:"Pendaftar",data:topKampus.map(([,v])=>v),
+            backgroundColor:"#10b981",borderRadius:5,borderSkipped:false}]
+        },
+        options:{
+          indexAxis:"y",
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{ticks:{color:textColor,font:{size:11},stepSize:1},grid:{color:gridColor},beginAtZero:true},
+            y:{ticks:{color:textColor,font:{size:11}},grid:{display:false}}
+          }
+        }
+      });
+    } else {
+      kampusWrap.innerHTML = "<p style='color:var(--muted);font-size:13px;padding:8px 0'>Tidak ada data — pastikan kolom <strong>nama_lembaga</strong> sudah ada di spreadsheet</p>";
+    }
   }
 
   function resetRekap() {
@@ -597,9 +869,48 @@
     document.getElementById("rekapSampai").value = "";
     const emptyMsg = `<div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>Klik "Tampilkan Rekap" untuk melihat data</span></div>`;
     document.getElementById("rekapStatus").innerHTML = emptyMsg;
+    document.getElementById("rekapRingkasan").innerHTML = `<div class="rekap-empty"><i class="bi bi-clipboard-data"></i><span>—</span></div>`;
     document.getElementById("rekapOPD").innerHTML = `<div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div>`;
     document.getElementById("rekapKampus").innerHTML = `<div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div>`;
     document.getElementById("rekapBulan").innerHTML = `<div class="rekap-empty"><i class="bi bi-bar-chart"></i><span>—</span></div>`;
+    ["chartStatus","chartBulan","chartOPD","chartKampus"].forEach(id => destroyChart(id));
+  }
+
+  // ===== MODAL DETAIL =====
+  function openModalDetail(rowIdx) {
+    const r = filteredData.find(d => d.rowIndex == rowIdx);
+    if (!r) return;
+
+    const fields = [
+      ["Nama Lengkap",       r.nama],
+      ["Email",              r.email],
+      ["Nomor HP",           r.nomor_hp  || r.hp || r.telepon],
+      ["Judul Penelitian",   r.proposal],
+      ["Asal Lembaga/Kampus",r.nama_lembaga || r.lembaga || r.kampus],
+      ["Program Studi",      r.prodi      || r.program_studi],
+      ["OPD / Lokasi",       r.lokasi],
+      ["Alamat",             r.alamat],
+      ["RT / RW",            r.rukun_tetangga_rt && r.rukun_warga_rw
+                                ? `RT ${r.rukun_tetangga_rt} / RW ${r.rukun_warga_rw}` : null],
+      ["Tanggal Mulai",      r.tanggal_mulai],
+      ["Tanggal Selesai",    r.tanggal_selesai],
+      ["Anggota Peneliti",   r.anggota_peneliti],
+      ["No. Surat",          r.no_surat   || r.nomor_surat],
+      ["Tanggal Surat",      r.tgl_surat  || r.tanggal_surat],
+      ["Status",             r.status     || "Pending"],
+      ["Waktu Daftar",       r.timestamp  ? formatDate(r.timestamp) : null],
+    ];
+
+    document.getElementById("modalDetailContent").innerHTML = fields
+      .filter(([, v]) => v && String(v).trim() !== "" && String(v).trim() !== "-")
+      .map(([label, val]) => `
+        <div style="border-bottom:1px solid var(--border,#eee);padding-bottom:8px;">
+          <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">${label}</div>
+          <div style="font-size:13.5px;color:var(--text);word-break:break-word;">${escHtml(val)}</div>
+        </div>
+      `).join("");
+
+    document.getElementById("modalDetail").classList.add("show");
   }
 
   // ===== MODAL STATUS =====
@@ -616,23 +927,20 @@
     if (!row) return;
 
     const btn = document.querySelector("#modalStatus .btn-modal-primary");
-    btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Menyimpan...';
-    btn.disabled = true;
-    btn.classList.add("loading");
-
+    setLoading(btn, true, "Menyimpan");
     try {
-      await fetch(`${APPS_SCRIPT_URL}?action=updateStatus&rowIndex=${row.rowIndex}&status=${encodeURIComponent(status)}`);
+      const res2 = await fetch(`${APPS_SCRIPT_URL}?action=updateStatus&rowIndex=${row.rowIndex}&status=${encodeURIComponent(status)}`);
+      if (!res2.ok) throw new Error(`Server error: ${res2.status}`);
       row.status = status;
-      renderTable(filteredData);
+      applySortAndRender();
       renderDashboard();
       closeModal("modalStatus");
       showToast("Status berhasil diperbarui!", "success");
     } catch (err) {
       showToast("Gagal memperbarui status!", "error");
     } finally {
+      setLoading(btn, false);
       btn.innerHTML = 'Simpan Status';
-      btn.disabled = false;
-      btn.classList.remove("loading");
     }
   }
 
@@ -669,6 +977,21 @@
     }
   }
 
+  // ===== AUTO UPDATE STATUS HELPER =====
+  async function autoUpdateStatus(rowIdx, status) {
+    try {
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=updateStatus&rowIndex=${rowIdx}&status=${encodeURIComponent(status)}`);
+      if (!res.ok) return;
+      // Update data lokal
+      const rowInFiltered = filteredData.find(r => r.rowIndex == rowIdx);
+      if (rowInFiltered) rowInFiltered.status = status;
+      const rowInAll = allData.find(r => r.rowIndex == rowIdx);
+      if (rowInAll) rowInAll.status = status;
+    } catch (e) {
+      console.warn("autoUpdateStatus gagal:", e);
+    }
+  }
+
   async function sendEmail() {
     const row = filteredData.find(r => r.rowIndex == currentRowIndex);
     if (!row) return;
@@ -693,10 +1016,7 @@
     }
 
     const btn = document.getElementById("btnKirimEmail");
-    btn.innerHTML = '<i class="bi bi-send-fill"></i> Mengirim...';
-    btn.disabled  = true;
-    btn.classList.add("loading");
-
+    setLoading(btn, true, "Mengirim");
     try {
       const formData = new FormData();
       formData.append("action",   "sendEmail");
@@ -717,19 +1037,29 @@
         formData.append("fileMime", file.type || "application/octet-stream");
       }
 
-      await fetch(APPS_SCRIPT_URL, {
+      const emailRes = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         body:   formData
       });
+      if (!emailRes.ok) throw new Error(`Server error: ${emailRes.status}`);
 
+      // AUTO UPDATE STATUS berdasarkan tipe email
+      const statusMap = { selesai: "Selesai", info: "Ditolak", ditolak: "Ditolak" };
+      const newStatus = statusMap[subject];
+      if (newStatus) {
+        await autoUpdateStatus(currentRowIndex, newStatus);
+        renderDashboard();
+        applySortAndRender();
+        showToast(`Email dikirim & status → ${newStatus}!`, "success");
+      } else {
+        showToast("Email berhasil dikirim!", "success");
+      }
       closeModal("modalEmail");
-      showToast("Email berhasil dikirim!", "success");
     } catch (err) {
       showToast("Gagal mengirim email!", "error");
     } finally {
+      setLoading(btn, false);
       btn.innerHTML = '<i class="bi bi-send-fill"></i> Kirim Email';
-      btn.disabled  = false;
-      btn.classList.remove("loading");
     }
   }
 
@@ -770,12 +1100,10 @@
     if (!row) return;
 
     const btn = document.getElementById("btnKonfirmasiSurat");
-    btn.innerHTML = '<i class="bi bi-file-earmark-plus"></i> Membuat...';
-    btn.disabled = true;
-    btn.classList.add("loading");
-
+    setLoading(btn, true, "Membuat");
     try {
       const res  = await fetch(`${APPS_SCRIPT_URL}?action=generateSurat&rowIndex=${row.rowIndex}`);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const data = await res.json();
 
       closeModal("modalKonfirmasiSurat");
@@ -786,13 +1114,18 @@
         if (rowInFiltered) rowInFiltered.link_surat = data.link;
         const rowInAll = allData.find(r => r.rowIndex == currentRowIndex);
         if (rowInAll) rowInAll.link_surat = data.link;
+
+        // AUTO UPDATE STATUS → Diproses
+        await autoUpdateStatus(currentRowIndex, "Diproses");
+
         applySortAndRender();
+        renderDashboard();
 
         // Tampilkan modal surat siap
         document.getElementById("suratSiapNama").textContent = row.nama || "—";
-        document.getElementById("btnLihatSurat").href = data.link;
+        document.getElementById("btnLihatSurat").href = safeUrl(data.link) || "#";
         document.getElementById("modalSuratSiap").classList.add("show");
-        showToast("Surat berhasil dibuat!", "success");
+        showToast("Surat dibuat & status → Diproses!", "success");
       } else {
         showToast("Surat sedang diproses!", "success");
       }
@@ -800,6 +1133,7 @@
       showToast("Gagal membuat surat!", "error");
       closeModal("modalKonfirmasiSurat");
     } finally {
+      setLoading(btn, false);
       btn.innerHTML = '<i class="bi bi-file-earmark-plus"></i> Ya, Buat Surat';
       btn.disabled = false;
       btn.classList.remove("loading");
@@ -857,5 +1191,191 @@
   });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+function exportExcel() {
+  const data = window.filteredData || [];
+  if (!data.length) {
+    alert("Tidak ada data untuk di-export. Pastikan data sudah dimuat.");
+    return;
+  }
+
+  const COLS = [
+    { key: "timestamp",       label: "Waktu Daftar",          width: 22 },
+    { key: "ref_number",      label: "No. Referensi",         width: 22 },
+    { key: "nama",            label: "Nama Pemohon",          width: 28 },
+    { key: "pekerjaan",       label: "Pekerjaan",             width: 20 },
+    { key: "alamat",          label: "Alamat",                width: 30 },
+    { key: "rukun_tetangga_rt", label: "RT",                  width: 6  },
+    { key: "rukun_warga_rw",  label: "RW",                    width: 6  },
+    { key: "kecamatan",       label: "Kecamatan",             width: 18 },
+    { key: "kabupaten",       label: "Kabupaten",             width: 18 },
+    { key: "email",           label: "Email",                 width: 28 },
+    { key: "nomor_hp",        label: "No. HP",                width: 16 },
+    { key: "nama_lembaga",    label: "Asal Lembaga/Kampus",   width: 30 },
+    { key: "fakultas",        label: "Fakultas",              width: 24 },
+    { key: "bidang",          label: "Prodi / Jurusan",       width: 24 },
+    { key: "proposal",        label: "Judul Penelitian",      width: 40 },
+    { key: "lokasi",          label: "OPD / Lokasi",          width: 30 },
+    { key: "tanggal_mulai",   label: "Tanggal Mulai",         width: 16 },
+    { key: "tanggal_selesai", label: "Tanggal Selesai",       width: 16 },
+    { key: "anggota_peneliti",label: "Anggota Peneliti",      width: 30 },
+    { key: "penanggung_jawab",label: "Penanggung Jawab",      width: 28 },
+    { key: "atasnama",        label: "Jabatan Penanggungjawab", width: 26 },
+    { key: "perihal",         label: "Perihal Surat",         width: 30 },
+    { key: "nomor_surat",     label: "Nomor Surat",           width: 20 },
+    { key: "tgl_surat",       label: "Tanggal Surat",         width: 16 },
+    { key: "status",          label: "Status",                width: 14 },
+    { key: "file",            label: "Link Berkas",           width: 36 },
+  ];
+
+  // Build worksheet rows
+  const wsData = [];
+
+  // === ROW 1: Judul laporan ===
+  wsData.push(["REKAPITULASI DATA REGISTRASI PENELITIAN"]);
+  wsData.push(["Badan Kesatuan Bangsa dan Politik Kabupaten Kudus"]);
+
+  // Keterangan filter
+  const dari   = document.getElementById("filterDari")?.value;
+  const sampai = document.getElementById("filterSampai")?.value;
+  const status = document.getElementById("filterStatus")?.value;
+  const filterInfo = [
+    dari || sampai ? `Periode: ${dari || "—"} s/d ${sampai || "—"}` : "Periode: Semua",
+    status ? `Status: ${status}` : "Status: Semua",
+    `Total data: ${data.length} pendaftar`,
+    `Dicetak: ${new Date().toLocaleString("id-ID")}`,
+  ].join("   |   ");
+  wsData.push([filterInfo]);
+  wsData.push([]); // baris kosong
+
+  // === ROW header kolom ===
+  wsData.push(["No.", ...COLS.map(c => c.label)]);
+
+  // === DATA ROWS ===
+  data.forEach((r, i) => {
+    wsData.push([
+      i + 1,
+      ...COLS.map(c => r[c.key] || "—")
+    ]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // === STYLING: merge judul ===
+  const totalCols = COLS.length + 1;
+  const lastColLetter = XLSX.utils.encode_col(totalCols - 1);
+  ws["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: totalCols - 1 } }, // judul
+    { s: { r: 1, c: 0 }, e: { r: 1, c: totalCols - 1 } }, // sub judul
+    { s: { r: 2, c: 0 }, e: { r: 2, c: totalCols - 1 } }, // filter info
+  ];
+
+  // === COLUMN WIDTHS ===
+  ws["!cols"] = [{ wch: 5 }, ...COLS.map(c => ({ wch: c.width }))];
+
+  // === ROW HEIGHTS: judul lebih tinggi ===
+  ws["!rows"] = [{ hpt: 22 }, { hpt: 18 }, { hpt: 16 }, { hpt: 6 }, { hpt: 20 }];
+
+  // === CELL STYLES ===
+  const setStyle = (cellRef, style) => {
+    if (!ws[cellRef]) ws[cellRef] = { t: "s", v: "" };
+    ws[cellRef].s = style;
+  };
+
+  const styleTitleMain = {
+    font: { bold: true, sz: 14, color: { rgb: "0A2A5E" } },
+    alignment: { horizontal: "center", vertical: "center" },
+    fill: { fgColor: { rgb: "DCEAF7" } },
+  };
+  const styleSubTitle = {
+    font: { bold: false, sz: 11, color: { rgb: "1A5CB5" } },
+    alignment: { horizontal: "center", vertical: "center" },
+    fill: { fgColor: { rgb: "DCEAF7" } },
+  };
+  const styleFilterInfo = {
+    font: { italic: true, sz: 9, color: { rgb: "5A7AAA" } },
+    alignment: { horizontal: "center" },
+    fill: { fgColor: { rgb: "F0F6FF" } },
+  };
+  const styleHeader = {
+    font: { bold: true, sz: 10, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "0A2A5E" } },
+    alignment: { horizontal: "center", vertical: "center", wrapText: true },
+    border: {
+      top:    { style: "thin", color: { rgb: "1A5CB5" } },
+      bottom: { style: "thin", color: { rgb: "1A5CB5" } },
+      left:   { style: "thin", color: { rgb: "1A5CB5" } },
+      right:  { style: "thin", color: { rgb: "1A5CB5" } },
+    }
+  };
+
+  // Apply title styles
+  setStyle("A1", styleTitleMain);
+  setStyle("A2", styleSubTitle);
+  setStyle("A3", styleFilterInfo);
+
+  // Apply header row styles (row index 4 = row 5 in sheet)
+  for (let c = 0; c <= totalCols - 1; c++) {
+    const ref = XLSX.utils.encode_cell({ r: 4, c });
+    setStyle(ref, styleHeader);
+  }
+
+  // Apply data row styles — zebra striping
+  const borderThin = { style: "thin", color: { rgb: "D0E4FF" } };
+  data.forEach((_, i) => {
+    const rowIdx = 5 + i;
+    const isEven = i % 2 === 0;
+    const bgColor = isEven ? "FFFFFF" : "F0F6FF";
+    for (let c = 0; c <= totalCols - 1; c++) {
+      const ref = XLSX.utils.encode_cell({ r: rowIdx, c });
+      if (!ws[ref]) ws[ref] = { t: "s", v: "" };
+
+      // Status cell — beri warna
+      const isStatusCol = c === COLS.findIndex(col => col.key === "status") + 1;
+      const statusVal = (ws[ref].v || "").toString();
+      let statusBg = bgColor;
+      if (isStatusCol) {
+        if (statusVal === "Selesai")  statusBg = "D1FAE5";
+        else if (statusVal === "Diproses") statusBg = "DBEAFE";
+        else if (statusVal === "Ditolak")  statusBg = "FEE2E2";
+        else statusBg = "FEF3C7";
+      }
+
+      ws[ref].s = {
+        fill: { fgColor: { rgb: statusBg } },
+        font: { sz: 10, color: { rgb: isStatusCol ? "0A2A5E" : "1A2B3C" }, bold: isStatusCol },
+        border: { top: borderThin, bottom: borderThin, left: borderThin, right: borderThin },
+        alignment: { vertical: "center", wrapText: false },
+      };
+    }
+  });
+
+  // === Build workbook & download ===
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Data Pendaftar");
+
+  const tgl = new Date().toISOString().slice(0, 10);
+  const filterLabel = status ? `_${status}` : "_Semua";
+  XLSX.writeFile(wb, `Rekap_Penelitian_Kesbangpol${filterLabel}_${tgl}.xlsx`, { bookType: "xlsx", cellStyles: true });
+}
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function toggleDark() {
+  const isDark = document.body.classList.toggle("dark");
+  localStorage.setItem("adminDark", isDark ? "1" : "0");
+  document.getElementById("darkIcon").className = isDark ? "bi bi-sun-fill" : "bi bi-moon-fill";
+}
+(function initDark() {
+  if (localStorage.getItem("adminDark") === "1") {
+    document.body.classList.add("dark");
+    const icon = document.getElementById("darkIcon");
+    if (icon) icon.className = "bi bi-sun-fill";
+  }
+})();
+</script>
 </body>
 </html>

@@ -44,8 +44,10 @@
       </div>
 
       <button class="btn-login" onclick="doLogin()">
-        <i class="bi bi-box-arrow-in-right"></i>
-        Masuk ke Dashboard
+        <div class="btn-spinner"></div>
+        <i class="bi bi-box-arrow-in-right" id="loginIcon"></i>
+        <span id="loginText">Masuk ke Dashboard</span>
+        <div class="btn-dots-pulse"><span></span><span></span><span></span></div>
       </button>
 
       <div class="back-link">
@@ -88,14 +90,20 @@
         return;
       }
 
-      btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Memverifikasi...';
+      btn.innerHTML = '<div class="btn-spinner"></div><span>Memverifikasi</span><div class="btn-dots-pulse"><span></span><span></span><span></span></div>';
       btn.disabled = true;
       btn.classList.add("loading");
       errorMsg.classList.remove("show");
 
       try {
+        // Hash password SHA-256 di browser — password asli tidak pernah dikirim ke server
+        const encoder = new TextEncoder();
+        const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(password));
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+
         // Pakai POST agar kredensial tidak muncul di URL/log
-        const body = new URLSearchParams({ action: "login", username, password });
+        const body = new URLSearchParams({ action: "login", username, password: hashedPassword });
         const res = await fetch(APPS_SCRIPT_URL, { method: "POST", body });
         const data = await res.json();
 
@@ -106,14 +114,14 @@
         } else {
           errorText.textContent = "Username atau password salah.";
           errorMsg.classList.add("show");
-          btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk ke Dashboard';
+          btn.innerHTML = '<div class="btn-spinner"></div><i class="bi bi-box-arrow-in-right"></i><span>Masuk ke Dashboard</span><div class="btn-dots-pulse"><span></span><span></span><span></span></div>';
           btn.disabled = false;
           btn.classList.remove("loading");
         }
       } catch (err) {
         errorText.textContent = "Gagal terhubung ke server. Coba lagi.";
         errorMsg.classList.add("show");
-        btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk ke Dashboard';
+        btn.innerHTML = '<div class="btn-spinner"></div><i class="bi bi-box-arrow-in-right"></i><span>Masuk ke Dashboard</span><div class="btn-dots-pulse"><span></span><span></span><span></span></div>';
         btn.disabled = false;
         btn.classList.remove("loading");
       }
